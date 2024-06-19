@@ -1,0 +1,49 @@
+/* TERMINAL LOGS */
+
+.bottom-pane {
+    width: 100%;
+    background-color: #fff;
+    border-top: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+}
+
+.tabbed-pane {
+    display: flex;
+    background-color: #E65486;
+    padding: 5px;
+}
+
+.tab {
+    padding: 5px 10px;
+    cursor: pointer;
+    color: white;
+    border-bottom: none;
+    background-color: #E65486;
+}
+.tab-active {
+    padding: 5px 10px;
+    cursor: pointer;
+    color: white;
+    text-decoration: underline;
+    text-decoration-color: white;
+    text-underline-offset: 20%;
+    border-bottom: none;
+    background-color: #E65486;
+}
+
+.tab:hover {
+    background-color: #ccc;
+}
+
+.tab-content {
+    display: none;
+    padding: 5%;
+    background-color: #FF6392;
+    height: 100%; /* Adjust for tab height and borders */
+    overflow-y: auto;
+}
+
+.tab-content.active {
+    display: block;
+}

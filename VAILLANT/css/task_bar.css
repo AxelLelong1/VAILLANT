@@ -1,0 +1,19 @@
+/* TASK BAR */
+.task-bar {
+    background-color: #E5CD52;
+    padding: 10px;
+    text-align: left;
+}
+
+.task-bar button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: none;
+    color: black;
+    cursor: pointer;
+    background-color: #E5CD52;
+}
+
+.task-bar button:hover {
+    background-color: #ddd;
+}

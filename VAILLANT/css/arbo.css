@@ -1,0 +1,14 @@
+/* ARBORESENCE */
+
+.files-pane {
+    width: 10% ;
+    background-color: #5AA9e6;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.file-window {
+    border:0;
+    padding: 10px;
+    margin-bottom: 10px;
+}

@@ -1,0 +1,27 @@
+/* WHILL HANDLE BASIC AND OVERALL STYLES */
+
+/* Reset styles */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.ligne {
+    background-color: #FF6392;
+    padding: .10%;
+}
+
+/* Basic styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+
+/* IDE */
+
+.ide-container {
+    display: flex;
+    height: calc(100vh - 40px); /* Adjust for task bar height */
+}

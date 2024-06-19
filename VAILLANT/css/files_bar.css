@@ -1,0 +1,34 @@
+/* FILES BAR */
+
+.open-files-bar {
+    background-color: #FFE45E;
+    padding: 0.5%;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px; /* Add margin to separate from the code editor */
+    text-align: left;
+    /*box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);*/
+}
+
+.open-files-bar li.files-active
+{
+    text-decoration: underline;
+    text-underline-offset: 20%;
+}
+
+.open-files-bar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.open-files-bar li {
+    display: inline-block; /* Display items horizontally */
+    padding: 5px 10px;
+    color: black;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.open-files-bar li:hover {
+    background-color: #ddd;
+}
