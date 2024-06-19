@@ -1,12 +1,20 @@
+import { editor } from 'monaco-editor';
 import React, { useState } from 'react';
 import MonacoEditor, { EditorDidMount }from 'react-monaco-editor';
 
 const EditorComponent: React.FC = () => {
     const [code, setCode] = useState<string>('Enter a ruby code !'); // State to hold the code
+    const [cursorLine, setCursorLine] = useState<number>(0); // State to hold the cursor position
+    const [timerId, setTimerId] = useState<number | null>(null); // State to hold the timer ID
+    const [remainingTime, setRemainingTime] = useState<number>(0); // State to hold the remaining time
 
     // Handler for editor content change
     const handleEditorChange = (newValue: string) => {
         setCode(newValue);
+    };
+
+    const deleteLine = (editor: editor.IStandaloneCodeEditor , lineNumber: number ) => {
+        // TODO : delete line here
     };
 
     const editorDidMount: EditorDidMount = (editor, monaco) => {
@@ -69,6 +77,33 @@ const EditorComponent: React.FC = () => {
         colors: {
           'editor.background': '#FFFFFF',
         },
+    });
+
+    editor.onDidChangeCursorPosition((e) =>  {
+        const position = editor.getPosition();
+        if (position != null && cursorLine != position.lineNumber)
+        {
+            setCursorLine(position.lineNumber);
+        // Clear the previous timer if it exists
+            if (timerId) {
+                clearTimeout(timerId);
+            }
+
+            // Set the remaining time
+            setRemainingTime(15);
+            // Set a new timer to update the remaining time and delete the line
+            const newTimerId = window.setInterval(() => {
+                setRemainingTime((prevTime) => {
+                    if (prevTime <= 1) {
+                        clearInterval(newTimerId);
+                        deleteLine(editor, position.lineNumber);
+                        return 0;
+                    }
+                    return prevTime - 1;
+                });
+            }, 1000);
+            setTimerId(newTimerId);
+        }
     });
   };
 
