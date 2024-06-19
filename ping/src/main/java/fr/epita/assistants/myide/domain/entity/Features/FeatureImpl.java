@@ -3,6 +3,7 @@ import fr.epita.assistants.myide.domain.entity.Feature;
 import fr.epita.assistants.myide.domain.entity.Features.ANY.AnyCLEANUP;
 import fr.epita.assistants.myide.domain.entity.Features.ANY.AnyDIST;
 import fr.epita.assistants.myide.domain.entity.Features.ANY.AnySEARCH;
+import fr.epita.assistants.myide.domain.entity.Features.MAVEN.*;
 import fr.epita.assistants.myide.domain.entity.Mandatory;
 
 import fr.epita.assistants.myide.domain.entity.Features.GIT.*;
@@ -32,13 +33,13 @@ public class FeatureImpl {
         }
 
         if (maven) {
-            featureMap.put(Mandatory.Features.Maven.CLEAN, null);
-            featureMap.put(Mandatory.Features.Maven.COMPILE, null);
-            featureMap.put(Mandatory.Features.Maven.EXEC, null);
-            featureMap.put(Mandatory.Features.Maven.INSTALL, null);
-            featureMap.put(Mandatory.Features.Maven.TEST, null);
-            featureMap.put(Mandatory.Features.Maven.PACKAGE, null);
-            featureMap.put(Mandatory.Features.Maven.TREE, null);
+            featureMap.put(Mandatory.Features.Maven.CLEAN, new MavenCLEAN());
+            featureMap.put(Mandatory.Features.Maven.COMPILE, new MavenCOMPILE());
+            featureMap.put(Mandatory.Features.Maven.EXEC, new MavenEXEC());
+            featureMap.put(Mandatory.Features.Maven.INSTALL, new MavenINSTALL());
+            featureMap.put(Mandatory.Features.Maven.TEST, new MavenTEST());
+            featureMap.put(Mandatory.Features.Maven.PACKAGE, new MavenPACKAGE());
+            featureMap.put(Mandatory.Features.Maven.TREE, new MavenTREE());
             ;
         }
     }

@@ -10,6 +10,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import static fr.epita.assistants.myide.presentation.rest.MyIdeEndpoint.ps;
+
 
 public class AnyCLEANUP extends AnyFeatures implements Feature {
     /**
@@ -21,10 +23,10 @@ public class AnyCLEANUP extends AnyFeatures implements Feature {
     @Override
     public Feature.ExecutionReport execute(Project project, Object... params) {
         BufferedReader reader;
-        NodeService service = (NodeService) params[0];
+        NodeService service = ps.getNodeService();
 
         try {
-            reader = new BufferedReader(new FileReader(project.getRootNode().getPath().toString() + ".myideignore"));
+            reader = new BufferedReader(new FileReader(project.getRootNode().getPath().toString() + "\\.myideignore"));
             String line = reader.readLine();
 
             while (line != null) {

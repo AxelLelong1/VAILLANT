@@ -1,7 +1,4 @@
-package fr.epita.assistants.myide.NodeHandler;
-
-import fr.epita.assistants.myide.domain.entity.Node;
-import lombok.Getter;
+package fr.epita.assistants.myide.domain.entity;
 
 import javax.validation.constraints.NotNull;
 import java.io.File;

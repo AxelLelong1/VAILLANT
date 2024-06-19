@@ -6,6 +6,8 @@ import fr.epita.assistants.myide.domain.entity.Project;
 import fr.epita.assistants.myide.utils.Logger;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PushCommand;
+import org.eclipse.jgit.api.Status;
+import org.eclipse.jgit.api.StatusCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
@@ -14,7 +16,22 @@ public class GitPUSH extends GitFeatures implements Feature {
     public ExecutionReport execute(Project project, Object... params) {
         Git git = findRepo(project);
         PushCommand push = git.push();
-        push.setCredentialsProvider(new UsernamePasswordCredentialsProvider("username", "password"));
+        try {
+            Status status = git.status().call();
+            if (status.getAdded().isEmpty() &&
+                    !status.hasUncommittedChanges() &&
+                    status.getUntracked().isEmpty() &&
+                    status.getChanged().isEmpty() &&
+                    status.getModified().isEmpty() &&
+                    status.getRemoved().isEmpty())
+            {
+                Logger.logError("Git: Cannot push because already up to date");
+                return FalseReport();
+            }
+        } catch (GitAPIException e) {
+            Logger.logError("Git: could not get status");
+            return FalseReport();
+        }
         try {
             push.call();
         } catch (GitAPIException e) {

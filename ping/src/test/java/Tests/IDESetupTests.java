@@ -33,7 +33,7 @@ public class IDESetupTests
     {
         ProjectService service = MyIde.init(null);
         Project p = service.load(Path.of("C:\\Users\\axell\\Downloads\\TestPing"));
-        service.getNodeService().create(p.getRootNode(), "TestFile.txt", Node.Types.FILE);
+        service.getNodeService().create(p.getRootNode(), "TOM.txt", Node.Types.FILE);
     }
 
     @Test

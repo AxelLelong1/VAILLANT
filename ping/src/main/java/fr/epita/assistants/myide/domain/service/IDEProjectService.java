@@ -1,11 +1,8 @@
-package fr.epita.assistants.myide.ProjectHandler;
+package fr.epita.assistants.myide.domain.service;
 
-import fr.epita.assistants.myide.NodeHandler.IDENodeService;
+import fr.epita.assistants.myide.domain.entity.IDEProject;
 import fr.epita.assistants.myide.domain.entity.Feature;
 import fr.epita.assistants.myide.domain.entity.Project;
-import fr.epita.assistants.myide.domain.service.NodeService;
-import fr.epita.assistants.myide.domain.service.ProjectService;
-import fr.epita.assistants.myide.utils.Logger;
 
 import java.nio.file.Path;
 

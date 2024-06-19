@@ -5,7 +5,7 @@ import fr.epita.assistants.myide.domain.entity.Features.FeaturesHolder;
 import fr.epita.assistants.myide.domain.entity.Mandatory;
 import fr.epita.assistants.myide.domain.entity.Node;
 import fr.epita.assistants.myide.domain.entity.Project;
-import fr.epita.assistants.myide.domain.entity.reports.SearchFeatureReport;
+import fr.epita.assistants.myide.domain.entity.report.SearchFeatureReport;
 import fr.epita.assistants.myide.domain.service.NodeService;
 
 import java.io.*;

@@ -1,7 +1,6 @@
 package fr.epita.assistants;
 
-import fr.epita.assistants.myide.ProjectHandler.IDEProjectService;
-import fr.epita.assistants.myide.domain.service.NodeService;
+import fr.epita.assistants.myide.domain.service.IDEProjectService;
 import fr.epita.assistants.myide.domain.service.ProjectService;
 import fr.epita.assistants.myide.utils.Given;
 

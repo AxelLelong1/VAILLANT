@@ -1,14 +1,8 @@
-package fr.epita.assistants.myide.ProjectHandler;
+package fr.epita.assistants.myide.domain.entity;
 
-import fr.epita.assistants.myide.NodeHandler.IDENode;
-import fr.epita.assistants.myide.domain.IDEentity.IDEAspect;
+import fr.epita.assistants.myide.domain.entity.IDEAspect;
 import fr.epita.assistants.myide.domain.entity.*;
 import fr.epita.assistants.myide.domain.entity.Features.FeatureImpl;
-import fr.epita.assistants.myide.domain.entity.Features.GIT.GitADD;
-import fr.epita.assistants.myide.domain.entity.Features.GIT.GitCOMMIT;
-import fr.epita.assistants.myide.domain.entity.Features.GIT.GitPULL;
-import fr.epita.assistants.myide.domain.entity.Features.GIT.GitPUSH;
-import fr.epita.assistants.myide.utils.Logger;
 
 import java.nio.file.Path;
 import java.util.*;

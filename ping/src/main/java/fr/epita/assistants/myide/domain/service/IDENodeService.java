@@ -1,19 +1,18 @@
-package fr.epita.assistants.myide.NodeHandler;
+package fr.epita.assistants.myide.domain.service;
 
+import fr.epita.assistants.myide.domain.entity.IDENode;
 import fr.epita.assistants.myide.domain.entity.Node;
-import fr.epita.assistants.myide.domain.service.NodeService;
-import fr.epita.assistants.myide.utils.Exceptions;
 import fr.epita.assistants.myide.utils.Logger;
-import fr.epita.assistants.myide.utils.ThrowingRunnable;
+
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Scanner;
+
+
+import static fr.epita.assistants.myide.presentation.rest.MyIdeEndpoint.currProject;
+import static fr.epita.assistants.myide.presentation.rest.MyIdeEndpoint.ps;
 
 public class IDENodeService implements NodeService {
     @Override
@@ -110,7 +109,7 @@ public class IDENodeService implements NodeService {
             Path f = nodeToMove.getPath();
             Path dst = destinationFolder.getPath();
             if (destinationFolder.isFolder())
-                dst = Path.of(destinationFolder.getPath() + "/" + f.getFileName());
+                dst = Path.of(destinationFolder.getPath().toString() + "/" + f.getFileName().toString());
             Files.move(f, dst);
 
             // Delete the node
@@ -120,10 +119,17 @@ public class IDENodeService implements NodeService {
                 parent.getChildren().remove(nodeToMove);
 
             // Build the new node
-            String new_path = destinationFolder.getPath().toString() + nodeToMove.getPath().getFileName().toString();
-            Node new_node = new IDENode(new_path, destinationFolder);
-            destinationFolder.getChildren().add(new_node);
-
+            //String new_path = destinationFolder.getPath().toString() + nodeToMove.getPath().getFileName().toString();
+            String new_path = dst.toString();
+            Node dstNode = null;
+            if (destinationFolder.isFile())
+            {
+                Path path = destinationFolder.getPath().getParent();
+                dstNode = ((IDENodeService) ps.getNodeService()).search(currProject.getRootNode(), path);
+            }
+            Node new_node = new IDENode(new_path, dstNode);
+            if (dstNode != null)
+                dstNode.getChildren().add(new_node);
             return new_node;
         } catch (Exception e) {
             throw new RuntimeException(e);

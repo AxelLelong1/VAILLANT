@@ -1,4 +1,4 @@
-package fr.epita.assistants.myide.domain.IDEentity;
+package fr.epita.assistants.myide.domain.entity;
 
 import fr.epita.assistants.myide.domain.entity.Aspect;
 import fr.epita.assistants.myide.domain.entity.Feature;
