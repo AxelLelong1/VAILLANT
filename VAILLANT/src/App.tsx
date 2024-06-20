@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import FileTree from './FileTree';
 import EditorComponent from './CodeEditor';
 
 import "../css/IDE.css"
@@ -10,7 +11,11 @@ import "../css/terminal.css"
 
 const App: React.FC = () => {
 
-  return (
+    const handleFileSelect = (filePath: string) => {
+        console.log('Selected file:', filePath);
+        // Implement logic to load file content or switch editor tab, etc.
+        };
+    return (
     <div>
         {/* Task bar */}
         <div className="task-bar">
@@ -26,24 +31,7 @@ const App: React.FC = () => {
         <div className="ide-container">
         {/* Files handling pane */}
         <div className="files-pane">
-            <div className="file-window">
-            {/* File tree structure (example) */}
-            <div className="file-tree">
-                <ul>
-                <li>Project
-                    <ul>
-                    <li>src
-                        <ul>
-                        <li>main.rb</li>
-                        </ul>
-                    </li>
-                    <li>index.html</li>
-                    <li>styles.css</li>
-                    </ul>
-                </li>
-                </ul>
-            </div>
-            </div>
+            <FileTree onFileSelect={handleFileSelect}/>
         </div>
 
         <div className="ruby-pane">

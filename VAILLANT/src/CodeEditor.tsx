@@ -1,6 +1,5 @@
 import React, { useState , useEffect, useRef} from 'react';
 import MonacoEditor, { EditorDidMount, monaco }from 'react-monaco-editor';
-import axios from 'axios';
 
 const EditorComponent: React.FC = () => {
     const [code, setCode] = useState<string>('Enter a ruby code !'); // State to hold the code
@@ -30,13 +29,25 @@ const EditorComponent: React.FC = () => {
                 content: '',
             };
 
-            axios.post('/api/update/file', payload)
-            .then(response => {
-                console.log(response.data);
+            fetch('/api/update/file', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
             })
-            .catch(error => {
-                console.error("Error deleting line: " + error);
-            });
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    console.log(data); // Handle success response
+                })
+                .catch((error) => {
+                    console.error('Error deleting line:', error); // Handle error
+                });
         }
 
     };
