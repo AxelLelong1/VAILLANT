@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import FileTree from './FileTree';
-import FileSelectionButton from './FileButton';
+import FileSelectionButton from './OpenFolder';
+import FileCreationButton from './NewFile'
 import EditorComponent from './CodeEditor';
 
 import "../css/IDE.css"
@@ -17,6 +18,10 @@ const App: React.FC = () => {
     const handleFolderSelect = (folderPath: string) => {
         setSelectedFolderPath(folderPath);
     };
+    
+    const handleFileCreation = () => {
+    };
+    
     return (
     <div>
         {/* Task bar */}
@@ -27,16 +32,17 @@ const App: React.FC = () => {
               <a>Fichier</a>
               <ul className="nav__submenu">
                 <li className="nav__submenu-item ">
-                  <a>Nouveau fichier</a>
+                  <a><FileCreationButton onFileCreation={handleFileCreation}/></a>
                 </li>
 
                 <li className="nav__submenu-item ">
-                    <FileSelectionButton onFolderSelect={handleFolderSelect} />
+                  <a>Ouvrir ...</a>
                 </li>
 
                 <li className="nav__submenu-item ">
-                  <a>Ouvrir le dossier ...</a>
+                    <a><FileSelectionButton onFolderSelect={handleFolderSelect}/></a>
                 </li>
+
                 <li className="nav__submenu-item ">
                   <a>Sauvegarder</a>
                 </li>
@@ -73,7 +79,7 @@ const App: React.FC = () => {
             </li>
 
             <li className="nav__menu-item">
-                <a>Language</a>
+                <a>Langage</a>
                 <ul className="nav__submenu">
                     <li className="nav__submenu-item ">
                         <a>Français</a>
