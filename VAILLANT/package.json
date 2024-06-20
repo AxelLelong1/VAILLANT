@@ -12,6 +12,7 @@
   "dependencies": {
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-file-picker": "^0.0.6",
     "react-folder-tree": "^5.1.1",
     "react-monaco-editor": "^0.55.0"
   },

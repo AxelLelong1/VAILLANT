@@ -49,19 +49,25 @@ public class MyIdeEndpoint {
         addIndentation(jsonBuilder, indentLevel);
         jsonBuilder.append("{\n");
         addIndentation(jsonBuilder, indentLevel + 1);
-        jsonBuilder.append("\"name\": \"").append(node.getPath().getFileName()).append("\",\n");
-        addIndentation(jsonBuilder, indentLevel + 1);
-        jsonBuilder.append("\"children\": [\n");
-        List<Node> children = node.getChildren();
-        for (int i = 0; i < children.size(); i++) {
-            convertNodeToJson(children.get(i), jsonBuilder, indentLevel + 2);
-            if (i < children.size() - 1) {
-                jsonBuilder.append(",\n");
+        jsonBuilder.append("\"name\": \"").append(node.getPath().getFileName());
+        if (!node.getChildren().isEmpty())
+            jsonBuilder.append("\",\n");
+        else
+            jsonBuilder.append("\"\n");
+        if (!node.getChildren().isEmpty()) {
+            addIndentation(jsonBuilder, indentLevel + 1);
+            jsonBuilder.append("\"children\": [\n");
+            List<Node> children = node.getChildren();
+            for (int i = 0; i < children.size(); i++) {
+                convertNodeToJson(children.get(i), jsonBuilder, indentLevel + 2);
+                if (i < children.size() - 1) {
+                    jsonBuilder.append(",\n");
+                }
             }
+            jsonBuilder.append("\n");
+            addIndentation(jsonBuilder, indentLevel + 1);
+            jsonBuilder.append("]\n");
         }
-        jsonBuilder.append("\n");
-        addIndentation(jsonBuilder, indentLevel + 1);
-        jsonBuilder.append("]\n");
         addIndentation(jsonBuilder, indentLevel);
         jsonBuilder.append("}");
     }
