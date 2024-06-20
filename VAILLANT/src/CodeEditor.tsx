@@ -1,20 +1,44 @@
-import { editor } from 'monaco-editor';
-import React, { useState } from 'react';
-import MonacoEditor, { EditorDidMount }from 'react-monaco-editor';
+import React, { useState , useEffect, useRef} from 'react';
+import MonacoEditor, { EditorDidMount, monaco }from 'react-monaco-editor';
+import axios from 'axios';
 
 const EditorComponent: React.FC = () => {
     const [code, setCode] = useState<string>('Enter a ruby code !'); // State to hold the code
     const [cursorLine, setCursorLine] = useState<number>(0); // State to hold the cursor position
-    const [timerId, setTimerId] = useState<number | null>(null); // State to hold the timer ID
     const [remainingTime, setRemainingTime] = useState<number>(0); // State to hold the remaining time
+    const intervalRef = useRef<number | null>(null); // Ref to keep track of the interval
+
 
     // Handler for editor content change
     const handleEditorChange = (newValue: string) => {
         setCode(newValue);
     };
 
-    const deleteLine = (editor: editor.IStandaloneCodeEditor , lineNumber: number ) => {
-        // TODO : delete line here
+    const deleteLine = (editor: monaco.editor.IStandaloneCodeEditor , lineNumber: number ) => {
+        const model = editor.getModel();
+        if (model) {
+            const range = new monaco.Range(lineNumber, 1, lineNumber, model.getLineMaxColumn(lineNumber));
+            const from = range.getStartPosition;
+            const to = range.getEndPosition;
+            // TODO : use real path
+            const path = "test.txt"
+            // Prepare the request payload
+            const payload = {
+                path: path,
+                from: from,
+                to: to,
+                content: '',
+            };
+
+            axios.post('/api/update/file', payload)
+            .then(response => {
+                console.log(response.data);
+            })
+            .catch(error => {
+                console.error("Error deleting line: " + error);
+            });
+        }
+
     };
 
     const editorDidMount: EditorDidMount = (editor, monaco) => {
@@ -84,26 +108,20 @@ const EditorComponent: React.FC = () => {
         if (position != null && cursorLine != position.lineNumber)
         {
             setCursorLine(position.lineNumber);
-        // Clear the previous timer if it exists
-            if (timerId) {
-                clearTimeout(timerId);
+            // Clear the previous timer if it exists
+            if (intervalRef.current !== null) {
+                clearInterval(intervalRef.current);
             }
-
-            // Set the remaining time
             setRemainingTime(15);
-            // Set a new timer to update the remaining time and delete the line
-            const newTimerId = window.setInterval(() => {
+            intervalRef.current = setInterval(() => {
                 setRemainingTime((prevTime) => {
-                    if (prevTime <= 1) {
-                        clearInterval(newTimerId);
-                        deleteLine(editor, position.lineNumber);
-                        return 0;
+                    if (prevTime < 1) {
+                        deleteLine(editor, cursorLine);
+                        return 15;
                     }
                     return prevTime - 1;
                 });
-            }, 1000);
-            setTimerId(newTimerId);
-        }
+            }, 1000);        }
     });
   };
 
@@ -116,7 +134,16 @@ const EditorComponent: React.FC = () => {
       language: 'ruby' // Specify language for syntax highlighting
   };
 
+  useEffect(() => {
+    return () => {
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+        }
+    };
+}, []);
+
   return (
+    <div id="code">
       <MonacoEditor
           width="99.9%"
           height="70%"
@@ -127,6 +154,8 @@ const EditorComponent: React.FC = () => {
           onChange={handleEditorChange}
           editorDidMount={editorDidMount}
       />
+      Timer : {remainingTime}
+      </div>
   );
 };
 
