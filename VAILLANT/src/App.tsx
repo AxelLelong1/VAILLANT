@@ -14,10 +14,70 @@ const App: React.FC = () => {
     <div>
         {/* Task bar */}
         <div className="task-bar">
-        <button>File</button>
-        <button>Edit</button>
-        <button>Language</button>
-        <button>Settings</button>
+        <nav className="nav">
+          <ul className="nav__menu">
+            <li className="nav__menu-item">
+              <a>Fichier</a>
+              <ul className="nav__submenu">
+                <li className="nav__submenu-item ">
+                  <a>Nouveau fichier</a>
+                </li>
+
+                <li className="nav__submenu-item ">
+                  <a>Ouvrir ...</a>
+                </li>
+
+                <li className="nav__submenu-item ">
+                  <a>Ouvrir le dossier ...</a>
+                </li>
+                <li className="nav__submenu-item ">
+                  <a>Sauvegarder</a>
+                </li>
+                <li className="nav__submenu-item ">
+                  <a>Sauvegarder sous ...</a>
+                </li>
+              </ul>
+            </li>
+            
+            <li className="nav__menu-item">
+              <a>Edition</a>
+              <ul className="nav__submenu">
+                <li className="nav__submenu-item ">
+                  <a>Annuler</a>
+                </li>
+
+                <li className="nav__submenu-item ">
+                  <a>Rétablir</a>
+                </li>
+
+                <li className="nav__submenu-item ">
+                  <a>Copier</a>
+                </li>
+                <li className="nav__submenu-item ">
+                  <a>Couper</a>
+                </li>
+                <li className="nav__submenu-item ">
+                  <a>Coller</a>
+                </li>
+                <li className="nav__submenu-item ">
+                  <a>Rechercher</a>
+                </li>
+              </ul>
+            </li>
+
+            <li className="nav__menu-item">
+                <a>Language</a>
+                <ul className="nav__submenu">
+                    <li className="nav__submenu-item ">
+                        <a>Français</a>
+                    </li>
+                    <li className="nav__submenu-item ">
+                        <a>Lietuviškas</a>
+                    </li>
+                </ul>
+            </li>
+          </ul>
+        </nav>
         </div>
 
         <div className="ligne"></div>
@@ -64,8 +124,8 @@ const App: React.FC = () => {
             <div className="bottom-pane">
             <div className="tabbed-pane">
                 <div className="tab-active" id="terminal-tab">Terminal</div>
-                <div className="tab" id="errors-tab">Errors</div>
-                <div className="tab" id="output-tab">Output</div>
+                <div className="tab" id="errors-tab">Erreurs</div>
+                <div className="tab" id="output-tab">Sortie</div>
             </div>
             <div className="tab-content active" id="terminal-content">
                 <pre id="terminal-output"></pre>

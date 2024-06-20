@@ -5,15 +5,55 @@
     text-align: left;
 }
 
-.task-bar button {
-    margin: 0 5px;
-    padding: 5px 10px;
-    border: none;
-    color: black;
-    cursor: pointer;
-    background-color: #E5CD52;
+.menu-container {
+    text-align: center;
 }
-
-.task-bar button:hover {
-    background-color: #ddd;
+nav ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.nav {
+    display: inline-block;
+    margin: 0;
+    color: #f0f0f0;
+    text-align: left;
+}
+.nav a {
+    display: block;
+    padding: 0 16px;
+    line-height: inherit;
+    cursor: pointer;
+    color:black;
+}
+.nav a:hover{
+    color: gray;
+}
+.nav__menu {
+    line-height: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.nav__menu-item {
+    display: inline-block;
+    position: relative;
+}
+.nav__menu-item:hover .nav__submenu {
+    display: block;
+}
+.nav__submenu {
+    padding-top: 15px;
+    padding-bottom: 5px;
+    font-weight: 300;
+    line-height: 20px;
+    text-transform: none;
+    background-color: #E5CD52;
+    display: none;
+    position: absolute;
+    z-index: 1;
+    width: 220px;
+}
+.nav__submenu-item:hover {
+    background: rgba(0, 0, 0, 0.1);
 }
