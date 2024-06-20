@@ -38,6 +38,41 @@ public class MyIdeEndpoint {
         Logger.logError(message);
         return Response.status(status, message).build();
     }
+    public static String convertTreeToJson(Node root)
+    {
+        StringBuilder jsonBuilder = new StringBuilder();
+        convertNodeToJson(root, jsonBuilder, 0);
+        return jsonBuilder.toString();
+    }
+
+    private static void convertNodeToJson(Node node, StringBuilder jsonBuilder, int indentLevel) {
+        addIndentation(jsonBuilder, indentLevel);
+        jsonBuilder.append("{\n");
+        addIndentation(jsonBuilder, indentLevel + 1);
+        jsonBuilder.append("\"name\": \"").append(node.getPath().getFileName()).append("\",\n");
+        addIndentation(jsonBuilder, indentLevel + 1);
+        jsonBuilder.append("\"children\": [\n");
+        List<Node> children = node.getChildren();
+        for (int i = 0; i < children.size(); i++) {
+            convertNodeToJson(children.get(i), jsonBuilder, indentLevel + 2);
+            if (i < children.size() - 1) {
+                jsonBuilder.append(",\n");
+            }
+        }
+        jsonBuilder.append("\n");
+        addIndentation(jsonBuilder, indentLevel + 1);
+        jsonBuilder.append("]\n");
+        addIndentation(jsonBuilder, indentLevel);
+        jsonBuilder.append("}");
+    }
+
+    private static void addIndentation(StringBuilder jsonBuilder, int indentLevel)
+    {
+        for (int i = 0; i < indentLevel; i++)
+        {
+            jsonBuilder.append(" ");
+        }
+    }
     @GET @Path("/hello")
     public Response helloWorld()
     {
@@ -56,8 +91,11 @@ public class MyIdeEndpoint {
         if (!Files.exists(path))
             return logRespErr(400, "Project doesn't exist");
         currProject = ps.load(path);
-        return logRespOk("Project opened " + ProjectPath);
+        String res = convertTreeToJson(currProject.getRootNode());
+        Logger.log("Project opened " + ProjectPath);
+        return Response.ok(res).build();
     }
+    
     @POST @Path("/open/file")
     public Response openFile(PathRequest req) {
         if (req == null || req.path() == null)
