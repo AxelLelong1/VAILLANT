@@ -19,7 +19,7 @@ public class MyIde {
      * @return An implementation of {@link ProjectService}.
      */
     public static ProjectService init(final Configuration configuration) {
-        return new IDEProjectService();
+        return new IDEProjectService(configuration);
     }
 
     /**

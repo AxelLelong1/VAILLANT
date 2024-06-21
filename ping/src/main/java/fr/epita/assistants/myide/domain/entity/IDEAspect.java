@@ -9,6 +9,7 @@ import fr.epita.assistants.myide.domain.entity.Features.GIT.GitADD;
 import fr.epita.assistants.myide.domain.entity.Features.GIT.GitCOMMIT;
 import fr.epita.assistants.myide.domain.entity.Features.GIT.GitPULL;
 import fr.epita.assistants.myide.domain.entity.Features.GIT.GitPUSH;
+import fr.epita.assistants.myide.domain.entity.Features.MAVEN.*;
 import fr.epita.assistants.myide.domain.entity.Mandatory;
 
 import javax.validation.constraints.NotNull;
@@ -45,6 +46,19 @@ public class IDEAspect implements Aspect {
             f.add(new AnySEARCH());
             f.add(new AnyDIST());
             f.add(new AnyCLEANUP());
+            return f;
+        }
+
+        if(type == Mandatory.Aspects.MAVEN)
+        {
+            List<Feature> f = new ArrayList<>();
+            f.add(new MavenCLEAN());
+            f.add(new MavenCOMPILE());
+            f.add(new MavenEXEC());
+            f.add(new MavenINSTALL());
+            f.add(new MavenTEST());
+            f.add(new MavenPACKAGE());
+            f.add(new MavenTREE());
             return f;
         }
 
