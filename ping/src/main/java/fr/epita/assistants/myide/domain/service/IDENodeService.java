@@ -7,6 +7,7 @@ import fr.epita.assistants.myide.utils.Logger;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -140,7 +141,7 @@ public class IDENodeService implements NodeService {
     public Node save(Node node, String content)
     {
         if (!node.isFile())
-            throw new RuntimeException("Update: node is a Folder");
+            throw new RuntimeException("Save: node is a Folder");
         FileWriter file;
         try {
             file = new FileWriter(node.getPath().toFile());
@@ -152,6 +153,16 @@ public class IDENodeService implements NodeService {
         catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
 
+    public String content(Node node)
+    {
+        if (!node.isFile())
+            throw new RuntimeException("Content: node is a Folder");
+        try {
+            return Files.readString(node.getPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

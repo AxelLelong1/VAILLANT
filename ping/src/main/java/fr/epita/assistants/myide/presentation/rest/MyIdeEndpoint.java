@@ -403,4 +403,27 @@ public class MyIdeEndpoint {
             return logRespErr(400, "File cannot be saved " + path + " with " + content);
         }
     }
+
+    @POST @Path("/content")
+    public Response content(PathRequest req) {
+        if (req == null  || req.path() == null)
+            return logRespErr(400, "File null");
+        java.nio.file.Path path = java.nio.file.Path.of(req.path());
+        Logger.log("reading " +  path);
+        if (!Files.exists(path))
+            return logRespErr(400, "File does not exist " + req.path());
+        Node node = null;
+        if (currProject != null)
+            node = ((IDENodeService) ps.getNodeService()).search(currProject.getRootNode(), path);
+        if (node == null)
+            node = new IDENode(path);
+        try {
+            String content = ((IDENodeService)ps.getNodeService()).content(node);
+            Logger.log("File read successfully " + path);
+            return Response.ok(content).build();
+        }
+        catch (Exception e) {
+            return logRespErr(400, "File cannot be read " + path);
+        }
+    }
 }
