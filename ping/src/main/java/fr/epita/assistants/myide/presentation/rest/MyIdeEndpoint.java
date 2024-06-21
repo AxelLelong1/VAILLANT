@@ -382,4 +382,25 @@ public class MyIdeEndpoint {
             return logRespOk("Feature executed successfully " + feature + " on " + project + ", params : " + params);
         return logRespErr(500, "Feature execution failed " + feature + " on " + project + ", params : " + params);
     }
+
+    @POST @Path("/save")
+    public Response save(SaveRequest req) {
+        if (req == null || req.content() == null || req.path() == null)
+            return logRespErr(400, "File null");
+        String content = req.content();
+        java.nio.file.Path path = java.nio.file.Path.of(req.path());
+        Logger.log("saving " +  path + " with content :\n  " + content);
+        Node node = null;
+        if (currProject != null)
+            node = ((IDENodeService) ps.getNodeService()).search(currProject.getRootNode(), path);
+        if (node == null)
+            node = new IDENode(path);
+        try {
+            ((IDENodeService)ps.getNodeService()).save(node, content);
+            return logRespOk("File saved successfully " + path + " with " + content);
+        }
+        catch (Exception e) {
+            return logRespErr(400, "File cannot be saved " + path + " with " + content);
+        }
+    }
 }
