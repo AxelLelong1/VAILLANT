@@ -144,7 +144,7 @@ public class MyIdeEndpoint {
                 try {
                     file = (ps.getNodeService()).create(parentNode, name, Node.Types.FILE);
                 } catch (Exception e) {
-                    return logRespErr(400, "Folder already exists " + FilePath);
+                    return logRespErr(400, "File already exists " + FilePath);
                 }
                 if (file!= null)
                 {
@@ -388,7 +388,7 @@ public class MyIdeEndpoint {
         if (req == null || req.content() == null || req.path() == null)
             return logRespErr(400, "File null");
         String content = req.content();
-        java.nio.file.Path path = java.nio.file.Path.of(req.path());
+        java.nio.file.Path path = java.nio.file.Path.of(req.path()).toAbsolutePath();
         Logger.log("saving " +  path + " with content :\n  " + content);
         Node node = null;
         if (currProject != null)
@@ -408,7 +408,7 @@ public class MyIdeEndpoint {
     public Response content(PathRequest req) {
         if (req == null  || req.path() == null)
             return logRespErr(400, "File null");
-        java.nio.file.Path path = java.nio.file.Path.of(req.path());
+        java.nio.file.Path path = java.nio.file.Path.of(req.path()).toAbsolutePath();
         Logger.log("reading " +  path);
         if (!Files.exists(path))
             return logRespErr(400, "File does not exist " + req.path());
@@ -424,6 +424,60 @@ public class MyIdeEndpoint {
         }
         catch (Exception e) {
             return logRespErr(400, "File cannot be read " + path);
+        }
+    }
+
+    @POST @Path("/saveAs")
+    public Response saveAs(SaveAsRequest req) {
+        if (req == null || req.content() == null || req.path() == null || req.newPath() == null)
+            return logRespErr(400, "File null");
+        String content = req.content();
+        java.nio.file.Path path = java.nio.file.Path.of(req.path()).toAbsolutePath();
+        if (!Files.exists(path))
+            return logRespErr(400, "File does not exist " + req.path());
+        java.nio.file.Path new_path = java.nio.file.Path.of(req.newPath()).toAbsolutePath();
+        Logger.log("saving " +  path + " with content :\n  " + content + "\nas : " + req.newPath());
+        java.nio.file.Path parentPath = path.getParent();
+        String name = path.getFileName().toString();
+        if (currProject != null)
+        {
+            Node parentNode = ((IDENodeService)ps.getNodeService()).search(currProject.getRootNode(), parentPath);
+            if (parentNode != null)
+            {
+                if (parentNode.isFile())
+                    return logRespErr(400, "Incorrect Path " + new_path);
+                Node file;
+                try {
+                    file = (ps.getNodeService()).create(parentNode, name, Node.Types.FILE);
+                } catch (Exception e) {
+                    return logRespErr(400, "File already exists " + new_path);
+                }
+                if (file!= null)
+                {
+                    filesOpened.add(file);
+                    try {
+                        ((IDENodeService)ps.getNodeService()).save(file, content);
+                        return logRespOk("File saved successfully " + path + " with " + content + "\nas : " + req.newPath());
+                    }
+                    catch (Exception e) {
+                        return logRespErr(400, "File cannot be saved " + new_path);
+                    }
+
+                }
+                return logRespErr(400, "File cannot be created " + new_path);
+            }
+        }
+        Node file = new IDENode(new_path);
+        File f = new File(new_path.toString());
+
+        try {
+            if (!f.createNewFile())
+                return logRespErr(400, "File already exists " + new_path);
+            filesOpened.add(file);
+            ((IDENodeService)ps.getNodeService()).save(file, content);
+            return logRespOk("File saved successfully " + path + " with " + content + "\nas : " + req.newPath());
+        } catch (Exception e) {
+            return logRespErr(400, "File cannot be created " + new_path);
         }
     }
 }
