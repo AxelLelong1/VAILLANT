@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import FolderTree from 'react-folder-tree';
+import 'react-folder-tree/dist/style.css';
 
 interface FileTreeNode {
     name: string;
@@ -10,33 +12,31 @@ interface FileTreeProps {
 }
 
 const FileTree: React.FC<FileTreeProps> = ({ folderPath }) => {
-    const [fileTree, setFileTree] = useState<FileTreeNode[]>([]);
+    const [fileTree, setFileTree] = useState<FileTreeNode | null>(null);
 
     useEffect(() => {
-        console.log(folderPath)
-        if (folderPath.length != 0) {
+        if (folderPath.length !== 0) {
             fetchFileTree();
         } else {
             // Clear file tree when no folderPath is provided
-            setFileTree([]);
+            setFileTree(null);
         }
     }, [folderPath]);
 
     const fetchFileTree = async () => {
         try {
-            // Replace with your fetch logic to get file tree based on folderPath
             const response = await fetch('http://localhost:8080/api/open/project', {
-                method:'POST',
+                method: 'POST',
                 headers: {
-                    "Content-Type":"application/json",
+                    "Content-Type": "application/json",
                 },
-                body: JSON.stringify({path: folderPath})
+                body: JSON.stringify({ path: folderPath })
             });
             if (!response.ok) {
                 throw new Error('Failed to fetch file tree');
             }
             const data = await response.json();
-            setFileTree(data.children);
+            setFileTree(data);
         } catch (error) {
             console.error('Error fetching file tree:', error);
         }
@@ -44,12 +44,12 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath }) => {
 
     return (
         <div className="file-tree">
-            <ul>
-                {fileTree.map((node, index) => (
-                    <li key={index}>{node.name}</li>
-                    // Add recursive rendering for nested nodes if necessary
-                ))}
-            </ul>
+            {fileTree && (
+                <FolderTree
+                    data={fileTree}
+                    showCheckbox={false}
+                />
+            )}
         </div>
     );
 };
