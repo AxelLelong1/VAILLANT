@@ -28,7 +28,7 @@ const FileCreationInput: React.FC<FileOpeningInputProps> = ({ onFileCreation }) 
 
     return (
         <div onClick={handleButtonClick}>
-            Ouvrir un dossier ...
+            Nouveau fichier
         </div>
     );
 };

@@ -1,57 +1,57 @@
-import React, { useState, useEffect } from 'react';
-
-interface FileTreeNode {
-    name: string;
-    children: FileTreeNode[];
-}
+// FileTree.tsx
+import React, { useEffect, useState } from 'react';
+import FolderTree from 'react-folder-tree';
+import 'react-folder-tree/dist/style.css';
 
 interface FileTreeProps {
-    folderPath: string;
+  onFileSelect: (filePath: string) => void;
 }
 
-const FileTree: React.FC<FileTreeProps> = ({ folderPath }) => {
-    const [fileTree, setFileTree] = useState<FileTreeNode[]>([]);
+const FileTree: React.FC<FileTreeProps> = () => {
+  const [fileTree, setFileTree] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        console.log(folderPath)
-        if (folderPath.length != 0) {
-            fetchFileTree();
-        } else {
-            // Clear file tree when no folderPath is provided
-            setFileTree([]);
-        }
-    }, [folderPath]);
-
+  useEffect(() => {
     const fetchFileTree = async () => {
-        try {
-            // Replace with your fetch logic to get file tree based on folderPath
-            const response = await fetch('http://localhost:8080/api/open/project', {
-                method:'POST',
-                headers: {
-                    "Content-Type":"application/json",
-                },
-                body: JSON.stringify({path: folderPath})
-            });
-            if (!response.ok) {
-                throw new Error('Failed to fetch file tree');
-            }
-            const data = await response.json();
-            setFileTree(data.children);
-        } catch (error) {
-            console.error('Error fetching file tree:', error);
+      try {
+        const response = await fetch('http://localhost:8080/api/open/project', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ path: 'C:\\Users\\axell\\Downloads\\PORRJET TETS' }), // Replace 'pathtoproject' with actual path variable
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
         }
+
+        const data = await response.json();
+        setFileTree(data);
+      } catch (error) {
+        setError('Error fetching data');
+      } finally {
+        setLoading(false);
+      }
     };
 
-    return (
-        <div className="file-tree">
-            <ul>
-                {fileTree.map((node, index) => (
-                    <li key={index}>{node.name}</li>
-                    // Add recursive rendering for nested nodes if necessary
-                ))}
-            </ul>
-        </div>
-    );
+    fetchFileTree();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  return (
+    <div className="file-tree">
+      {fileTree && (
+        <FolderTree
+          data={fileTree}
+          showCheckbox={false}
+        />
+      )}
+    </div>
+  );
 };
 
 export default FileTree;
