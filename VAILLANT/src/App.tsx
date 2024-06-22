@@ -10,6 +10,7 @@ import "../css/code.css"
 import "../css/files_bar.css"
 import "../css/task_bar.css"
 import "../css/terminal.css"
+import FileBarComponent from './FileBar';
 
 const App: React.FC = () => {
 
@@ -104,15 +105,7 @@ const App: React.FC = () => {
 
         <div className="ruby-pane">
             {/* Open files list */}
-            <div className="open-files-bar">
-            <ul id="open-files-list">
-                <li className="files-active">main.rb</li>
-                <li>index.html</li>
-                <li>styles.css</li>
-                <li>app.js</li>
-                <li>README.md</li>
-            </ul>
-            </div>
+            <FileBarComponent/>
 
             <EditorComponent />
 

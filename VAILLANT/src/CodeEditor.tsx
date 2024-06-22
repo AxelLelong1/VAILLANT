@@ -1,26 +1,71 @@
-import React, { useState , useEffect, useRef} from 'react';
-import MonacoEditor, { EditorDidMount, monaco }from 'react-monaco-editor';
+import React, { useState, useEffect, useRef } from 'react';
+import MonacoEditor, { EditorDidMount, monaco } from 'react-monaco-editor';
 
 const EditorComponent: React.FC = () => {
-    const [code, setCode] = useState<string>('Enter a ruby code !'); // State to hold the code
+    const [code, setCode] = useState<string>(''); // State to hold the code
     const [cursorLine, setCursorLine] = useState<number>(0); // State to hold the cursor position
     const [remainingTime, setRemainingTime] = useState<number>(0); // State to hold the remaining time
     const intervalRef = useRef<number | null>(null); // Ref to keep track of the interval
+    const filePath = 'bonjour.txt'; // Replace with your file path
 
+    // Fetch the file content when the component mounts
+    useEffect(() => {
+        const fetchFileContent = async () => {
+            // Decommenter le if quand on aura bien fait le filePath
+            //if (filePath != '')
+            //{
+                try {
+                // Open the file
+                await fetch('http://localhost:8080/api/open/file', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ path: '../projets/' + filePath }),
+                });
+
+                // Get the file content
+                const response = await fetch('http://localhost:8080/api/content', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ path: '../projets/' + filePath }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch file content');
+                }
+                const data = await response.text();
+                setCode(data); // Set the fetched content to the editor
+                } catch (error) {
+                    console.error('Error fetching file content:', error);
+                }
+            //}
+        };
+
+        fetchFileContent();
+
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+        };
+    }, []);
 
     // Handler for editor content change
     const handleEditorChange = (newValue: string) => {
         setCode(newValue);
     };
 
-    const deleteLine = (editor: monaco.editor.IStandaloneCodeEditor , lineNumber: number ) => {
+    const deleteLine = (editor: monaco.editor.IStandaloneCodeEditor, lineNumber: number) => {
         const model = editor.getModel();
         if (model) {
             const range = new monaco.Range(lineNumber, 1, lineNumber, model.getLineMaxColumn(lineNumber));
             const from = range.getStartPosition;
             const to = range.getEndPosition;
-            // TODO : use real path
-            const path = "test.txt"
+            // TODO: use real path
+            const path = "test.txt";
             // Prepare the request payload
             const payload = {
                 path: path,
@@ -49,125 +94,114 @@ const EditorComponent: React.FC = () => {
                     console.error('Error deleting line:', error); // Handle error
                 });
         }
-
     };
 
     const editorDidMount: EditorDidMount = (editor, monaco) => {
-      // Register Ruby language
-      monaco.languages.register({ id: 'ruby' });
+        // Register Ruby language
+        monaco.languages.register({ id: 'ruby' });
 
-      // Define syntax highlighting rules (Monarch)
-      monaco.languages.setMonarchTokensProvider('ruby', {
-          tokenizer: {
-              root: [
-                  // Keywords
-                  [/\b(?:def|end|if|else|elsif|unless|while|until|for|in|do|begin|rescue|ensure|case|when|class|module|def|self|super|return|next|break|yield)\b/, 'keyword'],
+        // Define syntax highlighting rules (Monarch)
+        monaco.languages.setMonarchTokensProvider('ruby', {
+            tokenizer: {
+                root: [
+                    // Keywords
+                    [/\b(?:def|end|if|else|elsif|unless|while|until|for|in|do|begin|rescue|ensure|case|when|class|module|def|self|super|return|next|break|yield)\b/, 'keyword'],
 
-                  // Identifiers and variables
-                  [/[a-zA-Z_]\w*/, 'identifier'],
+                    // Identifiers and variables
+                    [/[a-zA-Z_]\w*/, 'identifier'],
 
-                  // Numbers
-                  [/\b\d+\b/, 'number'],
+                    // Numbers
+                    [/\b\d+\b/, 'number'],
 
-                  // Strings
-                  [/"/, 'string', '@string_double'],
-                  [/'/, 'string', '@string_single'],
+                    // Strings
+                    [/"/, 'string', '@string_double'],
+                    [/'/, 'string', '@string_single'],
 
-                  // Comments
-                  [/#.*/, 'comment'],
-              ],
+                    // Comments
+                    [/#.*/, 'comment'],
+                ],
 
-              string_double: [
-                  [/[^\\"]+/, 'string'],
-                  [/"/, 'string', '@pop'],
-              ],
+                string_double: [
+                    [/[^\\"]+/, 'string'],
+                    [/"/, 'string', '@pop'],
+                ],
 
-              string_single: [
-                  [/[^\\']+/, 'string'],
-                  [/'/, 'string', '@pop'],
-              ],
-          },
-      });
+                string_single: [
+                    [/[^\\']+/, 'string'],
+                    [/'/, 'string', '@pop'],
+                ],
+            },
+        });
 
-      // Set language configuration
-      monaco.languages.setLanguageConfiguration('ruby', {
-          comments: {
-              lineComment: '#',
-              blockComment: ['=begin', '=end'],
-          },
-          brackets: [['{', '}'], ['[', ']'], ['(', ')']],
-          autoClosingPairs: [
-              { open: '{', close: '}' },
-              { open: '[', close: ']' },
-              { open: '(', close: ')' },
-              { open: "'", close: "'", notIn: ['string', 'comment'] },
-              { open: '"', close: '"', notIn: ['string'] },
-          ],
-      });
+        // Set language configuration
+        monaco.languages.setLanguageConfiguration('ruby', {
+            comments: {
+                lineComment: '#',
+                blockComment: ['=begin', '=end'],
+            },
+            brackets: [['{', '}'], ['[', ']'], ['(', ')']],
+            autoClosingPairs: [
+                { open: '{', close: '}' },
+                { open: '[', close: ']' },
+                { open: '(', close: ')' },
+                { open: "'", close: "'", notIn: ['string', 'comment'] },
+                { open: '"', close: '"', notIn: ['string'] },
+            ],
+        });
 
-      monaco.editor.defineTheme('my-theme', {
-        base: 'vs',
-        inherit: true,
-        rules: [],
-        colors: {
-          'editor.background': '#FFFFFF',
-        },
-    });
+        monaco.editor.defineTheme('my-theme', {
+            base: 'vs',
+            inherit: true,
+            rules: [],
+            colors: {
+                'editor.background': '#FFFFFF',
+            },
+        });
 
-    editor.onDidChangeCursorPosition((e) =>  {
-        const position = editor.getPosition();
-        if (position != null && cursorLine != position.lineNumber)
-        {
-            setCursorLine(position.lineNumber);
-            // Clear the previous timer if it exists
-            if (intervalRef.current !== null) {
-                clearInterval(intervalRef.current);
+        editor.onDidChangeCursorPosition(() => {
+            const position = editor.getPosition();
+            if (position != null && cursorLine != position.lineNumber) {
+                setCursorLine(position.lineNumber);
+                // Clear the previous timer if it exists
+                if (intervalRef.current !== null) {
+                    clearInterval(intervalRef.current);
+                }
+                setRemainingTime(15);
+                intervalRef.current = setInterval(() => {
+                    setRemainingTime((prevTime) => {
+                        if (prevTime < 1) {
+                            deleteLine(editor, cursorLine);
+                            return 15;
+                        }
+                        return prevTime - 1;
+                    });
+                }, 1000);
             }
-            setRemainingTime(15);
-            intervalRef.current = setInterval(() => {
-                setRemainingTime((prevTime) => {
-                    if (prevTime < 1) {
-                        deleteLine(editor, cursorLine);
-                        return 15;
-                    }
-                    return prevTime - 1;
-                });
-            }, 1000);        }
-    });
-  };
-
-
-
-  // Options for Monaco Editor
-  const editorOptions = {
-      selectOnLineNumbers: true,
-      automaticLayout: true,
-      language: 'ruby' // Specify language for syntax highlighting
-  };
-
-  useEffect(() => {
-    return () => {
-        if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-        }
+        });
     };
-}, []);
 
-  return (
-    <div id="code">
-      <MonacoEditor
-          width="99.9%"
-          height="70%"
-          language="ruby"
-          theme="vs"
-          value={code}
-          options={editorOptions}
-          onChange={handleEditorChange}
-          editorDidMount={editorDidMount}
-      />
-      Timer : {remainingTime}
-      </div>
-  );
+    // Options for Monaco Editor
+    const editorOptions = {
+        selectOnLineNumbers: true,
+        automaticLayout: true,
+        language: 'ruby' // Specify language for syntax highlighting
+    };
+
+    return (
+        <div id="code">
+            <MonacoEditor
+                width="99.9%"
+                height="70%"
+                language="ruby"
+                theme="vs"
+                value={code}
+                options={editorOptions}
+                onChange={handleEditorChange}
+                editorDidMount={editorDidMount}
+            />
+            Timer: {remainingTime}
+        </div>
+    );
 };
 
 export default EditorComponent;

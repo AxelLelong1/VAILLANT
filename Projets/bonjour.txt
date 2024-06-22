@@ -1,0 +1,3 @@
+Bonjour la
+
+On va écrire en Ruby bientôt !

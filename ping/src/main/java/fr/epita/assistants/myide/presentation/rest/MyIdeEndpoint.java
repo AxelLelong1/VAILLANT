@@ -116,8 +116,20 @@ public class MyIdeEndpoint {
             Node file = ((IDENodeService)ps.getNodeService()).search(currProject.getRootNode(), path);
             if (file != null)
             {
+                for (Node node : filesOpened) {
+                    if (node.getPath().compareTo(path) == 0) {
+                        filesOpened.remove(node);
+                        break;
+                    }
+                }
                 filesOpened.add(file);
                 return logRespOk("File opened " + FilePath);
+            }
+        }
+        for (Node node : filesOpened) {
+            if (node.getPath().compareTo(path) == 0) {
+                filesOpened.remove(node);
+                break;
             }
         }
         filesOpened.add(new IDENode(FilePath));
@@ -479,5 +491,16 @@ public class MyIdeEndpoint {
         } catch (Exception e) {
             return logRespErr(400, "File cannot be created " + new_path);
         }
+    }
+
+    @GET @Path("/getOpenFiles")
+    public Response getOpenedFiles() {
+        Logger.log("Fetching list of opened files");
+        List<String> openedFilesPaths = new ArrayList<>();
+        for (Node file : filesOpened) {
+            openedFilesPaths.add(file.getPath().toString());
+        }
+        Logger.log("List of opened files : " + filesOpened.size() + " elements : "+ openedFilesPaths);
+        return Response.ok(openedFilesPaths).build();
     }
 }
