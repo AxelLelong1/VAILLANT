@@ -13,7 +13,9 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import fr.epita.assistants.myide.utils.Logger;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -502,5 +504,41 @@ public class MyIdeEndpoint {
         }
         Logger.log("List of opened files : " + filesOpened.size() + " elements : "+ openedFilesPaths);
         return Response.ok(openedFilesPaths).build();
+    }
+
+    @POST @Path("/compile")
+    public Response compileRubyCode(ContentRequest req) {
+        if (req == null  || req.content() == null)
+            return logRespErr(400, "File null");
+        String content = req.content();
+        Logger.log("executing ruby code");
+        try {
+            java.nio.file.Path tempFile = java.nio.file.Files.createTempFile("code", ".rb");
+            java.nio.file.Files.write(tempFile, content.getBytes());
+
+            // Exécuter la commande Ruby
+            ProcessBuilder processBuilder = new ProcessBuilder("ruby", tempFile.toString());
+            processBuilder.redirectErrorStream(true);
+            Process process = processBuilder.start();
+
+            // Lire la sortie et les erreurs d'exécution
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            StringBuilder output = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append("\n");
+            }
+
+            process.waitFor();
+            int errorCount = 0;
+            // Compter le nombre d'erreurs dans l'output
+            if (output.toString().toLowerCase().contains("error") || output.toString().toLowerCase().contains("exception")) {
+                errorCount++;
+            }
+            Logger.log("compile successfully");
+            return Response.ok(new CompileResponse(output.toString(), errorCount, process.exitValue())).build();
+        } catch (Exception e) {
+            return logRespErr(400, "File cannot be compile");
+        }
     }
 }
