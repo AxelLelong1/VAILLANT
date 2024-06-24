@@ -6,6 +6,7 @@ const EditorComponent: React.FC = () => {
     const [cursorLine, setCursorLine] = useState<number>(0); // State to hold the cursor position
     const [remainingTime, setRemainingTime] = useState<number>(0); // State to hold the remaining time
     const intervalRef = useRef<number | null>(null); // Ref to keep track of the interval
+    const isFocusedRef = useRef<boolean>(true); // Ref to keep track of the editor focus state
     const filePath = 'bonjour.txt'; // Replace with your file path
 
     // Fetch the file content when the component mounts
@@ -59,7 +60,7 @@ const EditorComponent: React.FC = () => {
     };
 
     const deleteLine = (editor: monaco.editor.IStandaloneCodeEditor, lineNumber: number) => {
-        const model = editor.getModel();
+        /*const model = editor.getModel();
         if (model) {
             const range = new monaco.Range(lineNumber, 1, lineNumber, model.getLineMaxColumn(lineNumber));
             const from = range.getStartPosition;
@@ -93,7 +94,7 @@ const EditorComponent: React.FC = () => {
                 .catch((error) => {
                     console.error('Error deleting line:', error); // Handle error
                 });
-        }
+        }*/
     };
 
     const editorDidMount: EditorDidMount = (editor, monaco) => {
@@ -173,13 +174,26 @@ const EditorComponent: React.FC = () => {
                             deleteLine(editor, cursorLine);
                             return 15;
                         }
+                        if (!isFocusedRef.current) // Cursor not active
+                        {
+                            return prevTime;
+                        }
                         return prevTime - 1;
                     });
                 }, 1000);
             }
         });
+
+        editor.onDidBlurEditorText(() => {
+            isFocusedRef.current = false;
+        });
+
+        editor.onDidFocusEditorText(() => {
+            isFocusedRef.current = true;
+        });
     };
 
+    
     // Options for Monaco Editor
     const editorOptions = {
         selectOnLineNumbers: true,

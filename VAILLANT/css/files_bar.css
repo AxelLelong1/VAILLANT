@@ -32,3 +32,15 @@
 .open-files-bar li:hover {
     background-color: #ddd;
 }
+
+#open-files-list
+{ 
+    /*listStyleType: 'none';*/
+    padding: 0;
+    margin: 0 
+}
+#file-bar
+{
+    display: 'flex';
+    align-items: 'center';
+}

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 const useOpenedFiles = () => {
     const [files, setFiles] = useState<string[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [nbLives, setNbLives] = useState<number>(5);
 
     useEffect(() => {
         const fetchOpenedFiles = async () => {
@@ -31,8 +32,9 @@ const useOpenedFiles = () => {
         fetchOpenedFiles();
     }, []);
 
-    return { files, error };
+    return { files, error, nbLives, setNbLives };
 };
+
 
 const OpenedFileComponent: React.FC<{ filename: string }> = ({ filename }) => {
     return (
@@ -41,18 +43,32 @@ const OpenedFileComponent: React.FC<{ filename: string }> = ({ filename }) => {
 };
 
 const FileBarComponent: React.FC = () => {
-    const { files, error } = useOpenedFiles();
+    const { files, error, nbLives } = useOpenedFiles();
+
+    const totalLives = 5;
+    const fullHearts = nbLives;
+    const emptyHearts = totalLives - nbLives;
 
     return (
-        <div className="open-files-bar">
+        <div className="open-files-bar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             {error ? (
                 <p>{error}</p>
             ) : (
-                <ul id="open-files-list">
-                    {files.map((file, index) => (
-                        <OpenedFileComponent key={index} filename={file} />
-                    ))}
-                </ul>
+                <>
+                    <ul id="open-files-list">
+                        {files.map((file, index) => (
+                            <OpenedFileComponent key={index} filename={file} />
+                        ))}
+                    </ul>
+                    <div id="life-bar">
+                        {[...Array(emptyHearts)].map((_, index) => (
+                            <img key={index} src="/ImagesPing/empty-heart.png" alt="Empty Heart" style={{ width: '20px', height: '20px', margin: '0 2px' }} />
+                        ))}
+                        {[...Array(fullHearts)].map((_, index) => (
+                            <img key={index} src="/ImagesPing/full-heart.png" alt="Full Heart" style={{ width: '20px', height: '20px', margin: '0 2px' }} />
+                        ))}
+                    </div>
+                </>
             )}
         </div>
     );
