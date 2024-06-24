@@ -73,7 +73,6 @@ const FileBarComponent: React.FC = () => {
             console.log("running code: response ok");
             const data = await response.json();
             if (data.nb_errors > 0) {
-                console.log("PROUT    "+ data.nb_errors)
                 setErrorCount(data.nb_errors);
                 setRunError(data.output);
                 setShowModal(true);
@@ -126,7 +125,7 @@ const FileBarComponent: React.FC = () => {
                     </div>
                 </>
             )}
-            <Modal show={showModal} errors={runError} onClose={handleCloseModal} />
+            <Modal show={showModal} errors={runError} onClose={handleCloseModal} errorcount={errorCount}/>
         </div>
     );
 };
