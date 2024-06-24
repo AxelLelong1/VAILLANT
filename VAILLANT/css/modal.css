@@ -1,0 +1,34 @@
+.modal {
+    display: block; /* Afficher la fenêtre par défaut */
+    position: fixed; /* Rester en place même lorsque l'utilisateur défile */
+    z-index: 1; /* Placer la fenêtre au-dessus de tout le reste */
+    left: 50%; /* Centrer horizontalement */
+    top: 50%; /* Centrer verticalement */
+    transform: translate(-50%, -50%); /* Centrer exactement */
+    width: auto; /* Largeur auto pour s'adapter au contenu */
+    max-width:100%; /* Largeur maximale de la fenêtre */
+    overflow: auto; /* Activer le défilement si nécessaire */
+    background-color: rgba(0, 0, 0, 0); /* Fond semi-transparent */
+}
+
+.modal-content {
+    background-color: #661010;
+    margin: 15% auto; /* 15% à partir du haut et centrer */
+    padding: 20px;
+    border: 1px solid #320c0c;
+    width: 80%; /* Peut être ajusté pour s'adapter à votre mise en page */
+}
+
+.close {
+    color: #aaa;
+    top: 10px;
+    left: 10px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    text-decoration: none;
+    cursor: pointer;
+}
