@@ -13,7 +13,9 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import fr.epita.assistants.myide.utils.Logger;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -116,8 +118,20 @@ public class MyIdeEndpoint {
             Node file = ((IDENodeService)ps.getNodeService()).search(currProject.getRootNode(), path);
             if (file != null)
             {
+                for (Node node : filesOpened) {
+                    if (node.getPath().compareTo(path) == 0) {
+                        filesOpened.remove(node);
+                        break;
+                    }
+                }
                 filesOpened.add(file);
                 return logRespOk("File opened " + FilePath);
+            }
+        }
+        for (Node node : filesOpened) {
+            if (node.getPath().compareTo(path) == 0) {
+                filesOpened.remove(node);
+                break;
             }
         }
         filesOpened.add(new IDENode(FilePath));
@@ -144,7 +158,7 @@ public class MyIdeEndpoint {
                 try {
                     file = (ps.getNodeService()).create(parentNode, name, Node.Types.FILE);
                 } catch (Exception e) {
-                    return logRespErr(400, "Folder already exists " + FilePath);
+                    return logRespErr(400, "File already exists " + FilePath);
                 }
                 if (file!= null)
                 {
@@ -388,7 +402,7 @@ public class MyIdeEndpoint {
         if (req == null || req.content() == null || req.path() == null)
             return logRespErr(400, "File null");
         String content = req.content();
-        java.nio.file.Path path = java.nio.file.Path.of(req.path());
+        java.nio.file.Path path = java.nio.file.Path.of(req.path()).toAbsolutePath();
         Logger.log("saving " +  path + " with content :\n  " + content);
         Node node = null;
         if (currProject != null)
@@ -401,6 +415,130 @@ public class MyIdeEndpoint {
         }
         catch (Exception e) {
             return logRespErr(400, "File cannot be saved " + path + " with " + content);
+        }
+    }
+
+    @POST @Path("/content")
+    public Response content(PathRequest req) {
+        if (req == null  || req.path() == null)
+            return logRespErr(400, "File null");
+        java.nio.file.Path path = java.nio.file.Path.of(req.path()).toAbsolutePath();
+        Logger.log("reading " +  path);
+        if (!Files.exists(path))
+            return logRespErr(400, "File does not exist " + req.path());
+        Node node = null;
+        if (currProject != null)
+            node = ((IDENodeService) ps.getNodeService()).search(currProject.getRootNode(), path);
+        if (node == null)
+            node = new IDENode(path);
+        try {
+            String content = ((IDENodeService)ps.getNodeService()).content(node);
+            Logger.log("File read successfully " + path);
+            return Response.ok(content).build();
+        }
+        catch (Exception e) {
+            return logRespErr(400, "File cannot be read " + path);
+        }
+    }
+
+    @POST @Path("/saveAs")
+    public Response saveAs(SaveAsRequest req) {
+        if (req == null || req.content() == null || req.path() == null || req.newPath() == null)
+            return logRespErr(400, "File null");
+        String content = req.content();
+        java.nio.file.Path path = java.nio.file.Path.of(req.path()).toAbsolutePath();
+        if (!Files.exists(path))
+            return logRespErr(400, "File does not exist " + req.path());
+        java.nio.file.Path new_path = java.nio.file.Path.of(req.newPath()).toAbsolutePath();
+        Logger.log("saving " +  path + " with content :\n  " + content + "\nas : " + req.newPath());
+        java.nio.file.Path parentPath = path.getParent();
+        String name = path.getFileName().toString();
+        if (currProject != null)
+        {
+            Node parentNode = ((IDENodeService)ps.getNodeService()).search(currProject.getRootNode(), parentPath);
+            if (parentNode != null)
+            {
+                if (parentNode.isFile())
+                    return logRespErr(400, "Incorrect Path " + new_path);
+                Node file;
+                try {
+                    file = (ps.getNodeService()).create(parentNode, name, Node.Types.FILE);
+                } catch (Exception e) {
+                    return logRespErr(400, "File already exists " + new_path);
+                }
+                if (file!= null)
+                {
+                    filesOpened.add(file);
+                    try {
+                        ((IDENodeService)ps.getNodeService()).save(file, content);
+                        return logRespOk("File saved successfully " + path + " with " + content + "\nas : " + req.newPath());
+                    }
+                    catch (Exception e) {
+                        return logRespErr(400, "File cannot be saved " + new_path);
+                    }
+
+                }
+                return logRespErr(400, "File cannot be created " + new_path);
+            }
+        }
+        Node file = new IDENode(new_path);
+        File f = new File(new_path.toString());
+
+        try {
+            if (!f.createNewFile())
+                return logRespErr(400, "File already exists " + new_path);
+            filesOpened.add(file);
+            ((IDENodeService)ps.getNodeService()).save(file, content);
+            return logRespOk("File saved successfully " + path + " with " + content + "\nas : " + req.newPath());
+        } catch (Exception e) {
+            return logRespErr(400, "File cannot be created " + new_path);
+        }
+    }
+
+    @GET @Path("/getOpenFiles")
+    public Response getOpenedFiles() {
+        Logger.log("Fetching list of opened files");
+        List<String> openedFilesPaths = new ArrayList<>();
+        for (Node file : filesOpened) {
+            openedFilesPaths.add(file.getPath().toString());
+        }
+        Logger.log("List of opened files : " + filesOpened.size() + " elements : "+ openedFilesPaths);
+        return Response.ok(openedFilesPaths).build();
+    }
+
+    @POST @Path("/compile")
+    public Response compileRubyCode(ContentRequest req) {
+        if (req == null  || req.content() == null)
+            return logRespErr(400, "File null");
+        String content = req.content();
+        Logger.log("executing ruby code");
+        try {
+            java.nio.file.Path tempFile = java.nio.file.Files.createTempFile("code", ".rb");
+            java.nio.file.Files.write(tempFile, content.getBytes());
+
+            // Exécuter la commande Ruby
+            ProcessBuilder processBuilder = new ProcessBuilder("ruby", tempFile.toString());
+            processBuilder.redirectErrorStream(true);
+            Process process = processBuilder.start();
+
+            // Lire la sortie et les erreurs d'exécution
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            StringBuilder output = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append("\n");
+            }
+
+            process.waitFor();
+            int errorCount = 0;
+            // Compter le nombre d'erreurs dans l'output
+            if (output.toString().toLowerCase().contains("error") || output.toString().toLowerCase().contains("exception")) {
+                errorCount++;
+            }
+            Logger.log("compile successfully");
+            return Response.ok(new CompileResponse(output.toString(), errorCount, process.exitValue())).build();
+        } catch (Exception e) {
+            return logRespErr(400, "File cannot be compile");
         }
     }
 }

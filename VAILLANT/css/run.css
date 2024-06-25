@@ -1,0 +1,21 @@
+.button-run {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px;
+    background-color: rgba(0, 0, 0, 0); /* Couleur de fond verte */
+    color: white; /* Couleur du texte */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 20px; /* Largeur de l'image */
+    height: 20px; /* Hauteur de l'image */
+    margin-right: 5px; /* Espace entre l'image et le texte */
+}
+
+.button-run img {
+    width: 20px; /* Largeur de l'image */
+    height: 20px; /* Hauteur de l'image */
+    margin-right: 5px; /* Espace entre l'image et le texte */
+}
