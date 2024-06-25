@@ -11,29 +11,26 @@ import "../css/files_bar.css"
 import "../css/task_bar.css"
 import "../css/terminal.css"
 import FileBarComponent from './FileBar';
+import { useTheme } from './ThemeContext';
+
 
 const App: React.FC = () => {
+  const { toggleTheme, isDarkMode } = useTheme();
 
+  const theme = () => {
+    toggleTheme();
+  };
     const [selectedFolderPath, setSelectedFolderPath] = useState<string>('');
-    const [selectTheme, setTheme] = useState<boolean>(true);
     const handleFolderSelect = (folderPath: string) => {
         setSelectedFolderPath(folderPath);
     };
-    
     const handleFileCreation = () => {
     };
-    
-    const theme = () => {
-      if (selectTheme)
-        setTheme(false) 
-      else
-        setTheme(true)
-  };
 
     return (
-    <div>
+    <div className={`${isDarkMode ? "dark-mode" : ""}`}>
         {/* Task bar */}
-        <div className="task-bar">
+        <div className={`task-bar ${isDarkMode ? "dark" : ""}`}>
         <nav className="nav">
           <ul className="nav__menu">
             <li className="nav__menu-item">
@@ -98,41 +95,41 @@ const App: React.FC = () => {
                 </ul>
             </li>
               <button className="nav__menu-item" onClick={theme}>
-                  <a><img src={`/ImagesPing${selectTheme ? "/black.png" : "/white.png"}`} style= {{ width: '20px', height: '20px', margin: '0 2px' }} alt="Theme"/></a>
+                  <a><img src={`/ImagesPing${isDarkMode ? "/black.png" : "/white.png"}`} style= {{ width: '20px', height: '20px', margin: '0 2px' }} alt="Theme"/></a>
               </button>
           </ul>
         </nav>
         </div>
 
-        <div className="ligne"></div>
+        <div className={`ligne ${isDarkMode ? "dark" : ""}`}></div>
 
         {/* Main IDE layout */}
         <div className="ide-container">
         {/* Files handling pane */}
-        <div className="files-pane">
+        <div className={`files-pane ${isDarkMode ? "black" : ""}`}>
             {selectedFolderPath && <FileTree folderPath={selectedFolderPath} />}
         </div>
 
         <div className="ruby-pane">
             {/* Open files list */}
-            <FileBarComponent/>
+            <FileBarComponent />
 
             <EditorComponent />
 
             {/* Bottom pane for terminal, logs, etc. */}
             <div className="bottom-pane">
-            <div className="tabbed-pane">
-                <div className="tab-active" id="terminal-tab">Terminal</div>
-                <div className="tab" id="errors-tab">Erreurs</div>
-                <div className="tab" id="output-tab">Sortie</div>
+            <div className={`tabbed-pane ${isDarkMode ? "dark" : ""}`}>
+                <div className={`tab-active ${isDarkMode ? "dark" : ""}`} id="terminal-tab">Terminal</div>
+                <div className={`tab ${isDarkMode ? "dark" : ""}`} id="errors-tab">Erreurs</div>
+                <div className={`tab ${isDarkMode ? "dark" : ""}`} id="output-tab">Sortie</div>
             </div>
-            <div className="tab-content active" id="terminal-content">
+            <div className={`tab-content active ${isDarkMode ? "dark" : ""}`} id="terminal-content">
                 <pre id="terminal-output"></pre>
             </div>
-            <div className="tab-content" id="errors-content">
+            <div className={`tab-content ${isDarkMode ? "dark" : ""}`} id="errors-content">
                 <ul id="errors-list"></ul>
             </div>
-            <div className="tab-content" id="output-content">
+            <div className={`tab-content ${isDarkMode ? "dark" : ""}`} id="output-content">
                 <pre id="output-display"></pre>
             </div>
             </div>

@@ -4,6 +4,11 @@
     padding: 10px;
     text-align: left;
 }
+.task-bar.dark {
+    background-color: #e4c21c;
+    padding: 10px;
+    text-align: left;
+}
 
 .menu-container {
     text-align: center;
