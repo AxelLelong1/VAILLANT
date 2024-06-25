@@ -9,9 +9,10 @@ const groq = new Groq({
 
 interface ChatBotProps {
   setText: () => void; // Assuming setText is a function to handle button click
+  onClose: () => void;
 }
 
-const ChatBot: React.FC<ChatBotProps> = ({ setText }) => {
+const ChatBot: React.FC<ChatBotProps> = ({ setText, onClose }) => {
   const [inputText, setInputText] = useState<string>('');
   const [response, setResponse] = useState<string>('');
 
@@ -41,14 +42,39 @@ const ChatBot: React.FC<ChatBotProps> = ({ setText }) => {
 
   return (
     <div>
+      <button style={{
+        marginTop: '10px',
+        backgroundColor: '#E6E6FA', // Light purple background
+        color: 'black',
+        border: 'none',
+        borderRadius: '4px',
+        padding: '5px 5px',
+        cursor: 'pointer',
+        fontFamily: 'Arial, sans-serif',
+        fontSize: '14px',
+      }}
+      className="close-button" 
+      onClick={onClose}>x</button>
       <textarea
         value={inputText}
         onChange={(e) => setInputText(e.target.value)}
-        placeholder="Enter your message"
-        style={{ width: '300px', height: '100px' }}
+        placeholder="En quoi puis-je vous aider ?"
+        style={{ width: '280px', height: '300px', resize:'none', backgroundColor: '#E6E6FA', border:'none', borderRadius: '4px', fontFamily: 'Arial, sans-serif', fontSize: '14px', color:'black'}}
       />
       <br />
-      <button onClick={() => getGroqChatCompletion(inputText)}>Go</button>
+      <button style={{
+          marginTop: '10px',
+          backgroundColor: '#E6E6FA', // Light purple background
+          color: 'black',
+          border: 'none',
+          borderRadius: '4px',
+          padding: '10px 20px',
+          cursor: 'pointer',
+          fontFamily: 'Arial, sans-serif',
+          fontSize: '14px',
+        }}
+        onClick={() => getGroqChatCompletion(inputText)}>Go</button>
+
       <br />
       {response && <p>{response}</p>}
     </div>

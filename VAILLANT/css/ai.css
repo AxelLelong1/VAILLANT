@@ -1,0 +1,27 @@
+.ai-menu {
+    width: 300px;
+    background-color: violet;
+    position: fixed;
+    top: 0;
+    right: -300px;
+    height: 100%;
+    transition: right 0.3s;
+    overflow-y: auto;
+    z-index: 1000;
+    padding: 10px;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.5);
+}
+
+.ai-menu.visible {
+    right: 0;
+}
+
+.ai-menu-header {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.ai-menu-content {
+    padding: 10px;
+}
