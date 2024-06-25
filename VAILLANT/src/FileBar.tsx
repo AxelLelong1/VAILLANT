@@ -63,7 +63,7 @@ const FileBarComponent: React.FC = () => {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ content: "def greet(name)\n    puts \"Hello, \" + name\nend\n# 1ère erreur : appel de méthode avec le mauvais nombre d'arguments\n greet()\n# 2ème erreur : utilisation d'une variable non définie\nputs message\n# 3ème erreur : syntaxe incorrecte\nif name == \"Alice\"\n    puts \"Hi Alice\"\nend\n"
+                body: JSON.stringify({ content: "def greet(name)\n    puts \"Hello, \" + name\nend\n# 1ère erreur : appel de méthode avec le mauvais nombre d'arguments\n greet(\"mathieu\")\n# 2ème erreur : utilisation d'une variable non définie\nputs \"mathieu\"\n# 3ème erreur : syntaxe incorrecte\n\n    puts \"Hi Alice\"\n\n"
                 })});
             console.log("running code: trying response");
             if (!response.ok) {
@@ -73,13 +73,13 @@ const FileBarComponent: React.FC = () => {
             console.log("running code: response ok");
             const data = await response.json();
             if (data.nb_errors > 0) {
-                setErrorCount(data.nb_errors);
+                setErrorCount(data.nb_errors + errorCount);
                 setRunError(data.output);
                 setShowModal(true);
             } else {
                 setRunOutput(data.output);
                 setRunError(null);
-                setErrorCount(data.nb_errors);
+                setErrorCount(0);
                 setShowModal(false);
             }
         } catch (error) {
