@@ -51,7 +51,6 @@ const ChatBot: React.FC<ChatBotProps> = ({ setText }) => {
       <button onClick={() => getGroqChatCompletion(inputText)}>Go</button>
       <br />
       {response && <p>{response}</p>}
-      {/*<AIComponent setText={() => {}}/>*/}
     </div>
   );
 };

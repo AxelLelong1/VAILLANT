@@ -128,7 +128,7 @@ const App: React.FC = () => {
                 <pre id="output-display"></pre>
             </div>
             </div>
-
+            <AIComponent setText={() => {}}/>
         </div>
         </div>
     </div>
