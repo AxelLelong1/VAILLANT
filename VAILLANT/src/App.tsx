@@ -15,7 +15,7 @@ import FileBarComponent from './FileBar';
 const App: React.FC = () => {
 
     const [selectedFolderPath, setSelectedFolderPath] = useState<string>('');
-
+    const [selectTheme, setTheme] = useState<boolean>(true);
     const handleFolderSelect = (folderPath: string) => {
         setSelectedFolderPath(folderPath);
     };
@@ -23,6 +23,13 @@ const App: React.FC = () => {
     const handleFileCreation = () => {
     };
     
+    const theme = () => {
+      if (selectTheme)
+        setTheme(false) 
+      else
+        setTheme(true)
+  };
+
     return (
     <div>
         {/* Task bar */}
@@ -90,6 +97,9 @@ const App: React.FC = () => {
                     </li>
                 </ul>
             </li>
+              <button className="nav__menu-item" onClick={theme}>
+                  <a><img src={`/ImagesPing${selectTheme ? "/black.png" : "/white.png"}`} style= {{ width: '20px', height: '20px', margin: '0 2px' }} alt="Theme"/></a>
+              </button>
           </ul>
         </nav>
         </div>
