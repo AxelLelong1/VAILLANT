@@ -3,6 +3,7 @@ import FileTree from './FileTree';
 import FileSelectionButton from './OpenFolder';
 import FileCreationButton from './NewFile'
 import EditorComponent from './CodeEditor';
+import AIComponent from './AI';
 
 import "../css/IDE.css"
 import "../css/arbo.css"
@@ -12,6 +13,7 @@ import "../css/task_bar.css"
 import "../css/terminal.css"
 
 const App: React.FC = () => {
+  const apiKey = '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';
 
     const [selectedFolderPath, setSelectedFolderPath] = useState<string>('');
 
@@ -133,6 +135,7 @@ const App: React.FC = () => {
                 <pre id="output-display"></pre>
             </div>
             </div>
+
         </div>
         </div>
     </div>
