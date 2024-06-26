@@ -49,11 +49,11 @@ public class MyIdeEndpoint {
         jsonBuilder.append("{\n");
         addIndentation(jsonBuilder, indentLevel + 1);
         jsonBuilder.append("\"name\": \"").append(node.getPath().getFileName());
-        if (!node.getChildren().isEmpty())
+        if (node.isFolder())
             jsonBuilder.append("\",\n");
         else
             jsonBuilder.append("\"\n");
-        if (!node.getChildren().isEmpty()) {
+        if (node.isFolder()) {
             addIndentation(jsonBuilder, indentLevel + 1);
             jsonBuilder.append("\"children\": [\n");
             List<Node> children = node.getChildren();

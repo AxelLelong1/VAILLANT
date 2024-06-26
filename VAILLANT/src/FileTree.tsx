@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import FolderTree from 'react-folder-tree';
 import 'react-folder-tree/dist/style.css';
 
+// Define types for tree nodes and props
 interface FileTreeNode {
     name: string;
     children?: FileTreeNode[];
@@ -13,10 +14,14 @@ interface FileTreeProps {
 }
 
 const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick }) => {
+    // State for managing the tree structure displayed in UI
     const [fileTree, setFileTree] = useState<FileTreeNode | null>(null);
-    const fileTreeRef = useRef<FileTreeNode | null>(null);
-    const [isFetching, setIsFetching] = useState(false);
 
+    // State to track fetching status
+    const [isFetching, setIsFetching] = useState(false);
+    const [init, setInit] = useState(false);
+
+    // Effect to fetch the initial tree structure or update when folderPath changes
     useEffect(() => {
         if (folderPath.length !== 0 && !isFetching) {
             fetchFileTree();
@@ -25,32 +30,7 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick }) => {
         }
     }, [folderPath]);
 
-    const getPathFromIndices = (indices, tree) => {
-        let current = tree;
-        let path = current.name;
-        for (const index of indices) {
-            if (!current.children || current.children.length <= index) {
-                return null;
-            }
-            current = current.children[index];
-            path += `/${current.name}`;
-        }
-        return path;
-    };
-
-    const handleFileClick = ({ defaultOnClick, nodeData }) => {
-        const path = getPathFromIndices(nodeData.path, fileTreeRef.current);
-        if (path) {
-            if (nodeData.isOpen === undefined) {
-                onFileClick(path);
-            }
-        } else {
-            console.error('Invalid path', nodeData.path);
-        }
-
-        defaultOnClick();
-    };
-
+    // Function to fetch the file tree from the server
     const fetchFileTree = useCallback(async () => {
         try {
             setIsFetching(true);
@@ -65,8 +45,7 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick }) => {
                 throw new Error('Failed to fetch file tree');
             }
             const data = await response.json();
-            setFileTree(data);
-            fileTreeRef.current = data; // Store the tree in the ref
+            setFileTree(data); // Update the state with fetched data
         } catch (error) {
             console.error('Error fetching file tree:', error);
         } finally {
@@ -74,63 +53,143 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick }) => {
         }
     }, [folderPath]);
 
-    const changeName = async (before, name) => {
-        try {
-            const path = getPathFromIndices(before, fileTree);
-            const pos = path.lastIndexOf('/');
-            const newpath = path.substring(0, pos + 1) + name;
-
-            const response = await fetch('http://localhost:8080/api/move', {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ src: "../Projets/" + path, dst: "../Projets/" + newpath })
-            });
-
-            if (response.ok) {
-                updateFileTreeNodeName(before, name); // Update the tree locally
-            } else {
-                console.error('Failed to move the file');
+    // Function to handle file/folder click
+    const handleFileClick = ({ defaultOnClick, nodeData }) => {
+        const path = getPathFromIndices(nodeData.path, fileTree);
+        if (path) {
+            if (nodeData.isOpen === undefined) {
+                onFileClick(path);
             }
-        } catch (error) {
-            console.error("Couldn't move the selected file", error);
+        } else {
+            console.error('Invalid path', nodeData.path);
+        }
+        defaultOnClick();
+    };
+
+    const changeName = async (before, name) => {
+        if (init)
+            setInit(false);
+        else
+        {
+            try {
+                const path = getPathFromIndices(before, fileTree);
+                const pos = path.lastIndexOf('/');
+                const newpath = path.substring(0, pos + 1) + name;
+
+                const response = await fetch('http://localhost:8080/api/move', {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ src: "../Projets/" + path, dst: "../Projets/" + newpath })
+                });
+
+                if (response.ok) {
+                    fetchFileTree();
+                } else {
+                    console.error('Failed to move the file');
+                }
+            } catch (error) {
+                console.error("Couldn't move the selected file", error);
+            }
+            setInit(true);
         }
     };
 
-    const updateFileTreeNodeName = (pathIndices, newName) => {
-        if (!fileTreeRef.current) return;
+    // Function to add a file or folder
+    const addFile = async (path, isFolder) => {
+        if (init)
+            setInit(false);
+        else {
+            const folderPath = getPathFromIndices(path, fileTree);
+            const newPath = `${folderPath}/new ${isFolder ? 'folder' : 'file'}`;
 
-        const newTree = { ...fileTreeRef.current };
-        let current = newTree;
+            const url = isFolder
+                ? 'http://localhost:8080/api/create/folder'
+                : 'http://localhost:8080/api/create/file';
 
-        for (let i = 0; i < pathIndices.length - 1; i++) {
-            current = current.children[pathIndices[i]];
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ path: "../Projets/" + newPath })
+                });
+
+                if (response.ok) {
+                    fetchFileTree(); // Refetch the tree to reflect the new addition
+                } else {
+                    console.error('Failed to create the file or folder');
+                    fetchFileTree();
+                }
+            } catch (error) {
+                console.error("Couldn't create the file or folder", error);
+            }
+            setInit(true);
+    }};
+
+    const deleteNode = async (node) => {
+        if (init)
+            setInit(false);
+        else
+        {
+            try {
+                const path = getPathFromIndices(node, fileTree);
+
+                const response = await fetch('http://localhost:8080/api/delete/folder', {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ path: "../Projets/" + path})
+                });
+
+                if (response.ok) {
+                    fetchFileTree();
+                } else {
+                    console.error('Failed to move the file');
+                }
+            } catch (error) {
+                console.error("Couldn't move the selected file", error);
+            }
+            setInit(true);
         }
-
-        const childIndex = pathIndices[pathIndices.length - 1];
-        current.children[childIndex] = {
-            ...current.children[childIndex],
-            name: newName,
-        };
-
-        fileTreeRef.current = newTree;
     };
 
+    // Function to handle tree state changes (rename, delete, add)
     const onTreeStateChange = (state, event) => {
+
+        console.log(event);
         switch (event.type) {
+            case "initialization":
+                break;
             case "renameNode":
                 changeName(event.path, event.params[0]);
                 break;
             case "deleteNode":
-                // Handle delete node logic
+                deleteNode(event.path);
                 break;
             case "addNode":
-                // Handle add node logic
+                addFile(event.path, event.params[0]);
                 break;
             default:
                 break;
         }
+    };
+
+    // Function to get path from indices
+    const getPathFromIndices = (indices, tree) => {
+        let current = tree;
+        let path = current.name;
+        for (const index of indices) {
+            if (!current.children || current.children.length <= index) {
+                return null;
+            }
+            current = current.children[index];
+            path += `/${current.name}`;
+        }
+        return path;
     };
 
     return (
