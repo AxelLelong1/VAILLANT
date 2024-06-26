@@ -2,8 +2,10 @@
 
 .files-pane {
     width: 10% ;
+    min-width: 2%;
     background-color: #5AA9e6;
     padding: 10px;
+    resize: horizontal;
     overflow-y: auto;
 }
 
