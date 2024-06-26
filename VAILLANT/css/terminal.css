@@ -134,7 +134,7 @@
 }
 
 .terminal-input input {
-    background: #E65486;
+    background: #FF6392;
     border: none;
     color: white;
     flex-grow: 1;
@@ -143,7 +143,7 @@
 }
 
 .terminal-input.black input {
-    background: #a81c39;
+    background: #ad2944;
     border: none;
     color: white;
     flex-grow: 1;
