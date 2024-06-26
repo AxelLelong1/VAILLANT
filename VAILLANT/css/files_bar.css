@@ -8,6 +8,14 @@
     text-align: left;
     /*box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);*/
 }
+.open-files-bar.black {
+    background-color: #b49809;
+    padding: 0.5%;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px; /* Add margin to separate from the code editor */
+    text-align: left;
+    /*box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);*/
+}
 
 .open-files-bar li.files-active
 {

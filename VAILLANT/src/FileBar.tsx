@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../css/run.css';
-import Modal from './Modal'; 
+import Modal from './Modal';
+import { useTheme } from './ThemeContext';
 
 const useOpenedFiles = () => {
     const [files, setFiles] = useState<string[]>([]);
@@ -45,6 +46,7 @@ const OpenedFileComponent: React.FC<{ filename: string }> = ({ filename }) => {
 };
 
 const FileBarComponent: React.FC = () => {
+    const {isDarkMode} = useTheme();
     const { files, error, nbLives } = useOpenedFiles();
     const [runError, setRunError] = useState<string | null>(null);
     const [runOutput, setRunOutput] = useState<string | null>(null);
@@ -52,6 +54,7 @@ const FileBarComponent: React.FC = () => {
     const [errorCount, setErrorCount] = useState<number>(0);
 
     const totalLives = 5;
+    const err = 0;
     const fullHearts = nbLives;
     const emptyHearts = totalLives - nbLives;
 
@@ -100,7 +103,7 @@ const FileBarComponent: React.FC = () => {
     };
 
     return (
-        <div className="open-files-bar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className={`open-files-bar ${isDarkMode ? "black" : ""}`} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             {error ? (
                 <p>{error}</p>
             ) : (

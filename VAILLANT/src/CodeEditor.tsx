@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import MonacoEditor, { EditorDidMount, monaco } from 'react-monaco-editor';
+import { useTheme } from './ThemeContext';
 
 const EditorComponent: React.FC = () => {
+    const {isDarkMode} = useTheme();
     const [code, setCode] = useState<string>(''); // State to hold the code
     const [cursorLine, setCursorLine] = useState<number>(0); // State to hold the cursor position
     const [remainingTime, setRemainingTime] = useState<number>(0); // State to hold the remaining time
@@ -207,7 +209,7 @@ const EditorComponent: React.FC = () => {
                 width="99.9%"
                 height="70%"
                 language="ruby"
-                theme="vs"
+                theme= {`${isDarkMode ? "vs-dark" : "vs"}`}
                 value={code}
                 options={editorOptions}
                 onChange={handleEditorChange}

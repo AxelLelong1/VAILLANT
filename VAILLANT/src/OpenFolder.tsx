@@ -11,7 +11,7 @@ const FolderSelectionInput: React.FC<FolderSelectionInputProps> = ({ onFolderSel
         if (files && files.length > 0) {
             console.log(files[0])
             const folderPath = files[0].webkitRelativePath?.split('/')[0] ?? '';
-            onFolderSelect("../projets/" + folderPath);
+            onFolderSelect("../Projets/" + folderPath);
         }
     };
 

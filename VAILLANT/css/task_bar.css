@@ -3,11 +3,34 @@
     background-color: #E5CD52;
     padding: 10px;
     text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.task-bar.dark {
+    background-color: #e4c21c;
+    padding: 10px;
+    text-align: left;
 }
 
 .menu-container {
     text-align: center;
 }
+
+.left-menu, .right-menu {
+    display: flex;
+    align-items: center;
+}
+
+.left-menu {
+    flex: 1;
+}
+
+.right-menu {
+    justify-content: flex-end;
+    flex: 1;
+}
+
 nav ul {
     list-style: none;
     padding-left: 0;
@@ -39,6 +62,7 @@ nav ul {
     display: inline-block;
     position: relative;
 }
+
 .nav__menu-item:hover .nav__submenu {
     display: block;
 }
