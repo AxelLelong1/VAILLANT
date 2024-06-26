@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import FileTree from './FileTree';
 import FileSelectionButton from './OpenFolder';
 import FileCreationButton from './NewFile'
-import EditorComponent from './CodeEditor';
+//import EditorComponent from './CodeEditor';
 import AIComponent from './AI';
 import FileBarComponent from './FileBar';
 
@@ -192,8 +192,6 @@ const App: React.FC = () => {
         <div className="ruby-pane">
             {/* Open files list */}
             <FileBarComponent />
-
-            <EditorComponent />
 
             {/* Bottom pane for terminal, logs, etc. */}
             <div className="bottom-pane">
