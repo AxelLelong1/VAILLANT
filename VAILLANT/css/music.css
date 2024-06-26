@@ -1,0 +1,40 @@
+/* src/components/MusicPlayer.css */
+.music-player {
+    text-align: center;
+    margin-top: 50px;
+  }
+  
+  .music-player h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+  }
+  
+  .music-player audio {
+    display: none;
+  }
+  
+  .music-player .controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .music-player .controls button {
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    border: none;
+    background-color: #4A91C3; /* New darker blue color */
+    color: white;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  
+  .music-player .controls button:hover {
+    background-color: #3A7BA1; /* Even darker on hover */
+  }
+  
+  .music-player p {
+    font-size: 1.2em;
+    margin-top: 20px;
+  }
