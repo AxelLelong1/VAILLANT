@@ -60,3 +60,11 @@ nav ul {
 .nav__submenu-item:hover {
     background: rgba(0, 0, 0, 0.1);
 }
+
+.editor{
+    background-color: white;
+}
+
+.editor.dark{
+    background-color: #1e1e1e;
+}
