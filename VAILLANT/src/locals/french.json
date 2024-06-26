@@ -1,0 +1,23 @@
+{
+    "File": "Fichier",
+    "NewFile": "Nouveau Fichier",
+    "Open": "Ouvrir ...",
+    "Save": "Sauvegarder",
+    "SaveAs": "Sauvegarder sous ...",
+    "Edit": "Édition",
+    "Undo": "Annuler",
+    "Redo": "Rétablir",
+    "Copy": "Copier",
+    "Cut": "Couper",
+    "Paste": "Coller",
+    "Search": "Rechercher",
+    "Language": "Langage",
+    "French": "Français",
+    "Lithuanian": "Lietuviškas",
+    "OpenFolder": "Ouvrir un dossier",
+    "Terminal": "Invite de commandes",
+    "Errors": "Erreurs",
+    "Output": "Sortie",
+    "ChooseFiles": "Selectionner des fichiers",
+    "files": "fichier(s)"
+  }

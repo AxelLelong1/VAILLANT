@@ -1,10 +1,12 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface FileOpeningInputProps {
     onFileCreation: (folderPath: string) => void;
 }
 
 const FileCreationInput: React.FC<FileOpeningInputProps> = ({ onFileCreation }) => {
+    const { t } = useTranslation();
     const handleFileCreation = (event: Event) => {
         const target = event.target as HTMLInputElement;
         const files = target.files;
@@ -28,7 +30,7 @@ const FileCreationInput: React.FC<FileOpeningInputProps> = ({ onFileCreation }) 
 
     return (
         <div onClick={handleButtonClick}>
-            Nouveau fichier
+            {t('NewFile')}
         </div>
     );
 };

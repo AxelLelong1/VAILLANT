@@ -24,6 +24,7 @@ const MusicPlayer: React.FC = () => {
 
   const handleNext = () => {
     setCurrentTrack((prevTrack) => (prevTrack + 1) % tracks.length);
+    setPlayPause(false);
   };
 
   const handleEnded = () => {
