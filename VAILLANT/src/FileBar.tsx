@@ -118,7 +118,7 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
                 <Modal show={showModal} errors={runError} onClose={handleCloseModal} errorcount={errorCount} />
             </div>
             {files.map((file) => (
-                <div key={file} style={{ display: activeFile === file ? 'block' : 'none' }}>
+                <div className={`${isDarkMode ? "editor dark" : "editor"}`} key={file} style={{ display: activeFile === file ? 'flex' : 'none' }}>
                     <EditorComponent
                         filePath={file}
                         content={fileContents[file] || ""}

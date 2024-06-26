@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import MonacoEditor, { EditorDidMount, monaco } from 'react-monaco-editor';
 import { useTheme } from './ThemeContext';
 
+import "../css/bomb.css"
+
 interface EditorComponentProps {
     filePath: string;
     content: string;
@@ -15,6 +17,23 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentCh
     const [remainingTime, setRemainingTime] = useState<number>(0); // State to hold the remaining time
     const intervalRef = useRef<number | null>(null); // Ref to keep track of the interval
     const isFocusedRef = useRef<boolean>(true); // Ref to keep track of the editor focus state
+
+    const list_bomb =  ["/ImagesPing/BombTimer/Bomb0.png",
+        "/ImagesPing/BombTimer/Bomb1.png",
+        "/ImagesPing/BombTimer/Bomb2.png",
+        "/ImagesPing/BombTimer/Bomb3.png",
+        "/ImagesPing/BombTimer/Bomb4.png",
+        "/ImagesPing/BombTimer/Bomb5.png",
+        "/ImagesPing/BombTimer/Bomb6.png",
+        "/ImagesPing/BombTimer/Bomb7.png",
+        "/ImagesPing/BombTimer/Bomb8.png",
+        "/ImagesPing/BombTimer/Bomb9.png",
+        "/ImagesPing/BombTimer/Bomb10.png",
+        "/ImagesPing/BombTimer/Bomb11.png",
+        "/ImagesPing/BombTimer/Bomb12.png",
+        "/ImagesPing/BombTimer/Bomb13.png",
+        "/ImagesPing/BombTimer/Bomb14.png",
+        "/ImagesPing/BombTimer/Bomb15.png"];
 
     // Fetch the file content when the component mounts
     useEffect(() => {
@@ -204,7 +223,7 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentCh
     };
 
     return (
-        <div className="code">
+        <div className={`${isDarkMode ? "editor dark" : "editor"}`}>
             <MonacoEditor
                 width="99.9%"
                 height="70%"
@@ -215,7 +234,8 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentCh
                 onChange={handleEditorChange}
                 editorDidMount={editorDidMount}
             />
-            Timer: {remainingTime}
+            <div> <img className='bomb' src={`${list_bomb[remainingTime]}`}></img>
+            </div>
         </div>
     );
 };
