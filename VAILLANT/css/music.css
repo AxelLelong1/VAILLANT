@@ -1,12 +1,39 @@
 /* src/components/MusicPlayer.css */
 .music-player {
     text-align: center;
-    margin-top: 50px;
+    color: white;
+    margin-top: 70px;
+    animation: move 3s infinite linear ;
+    z-index: 1;
   }
-  
+@keyframes move {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+ .bubble
+ {
+  aspect-ratio: 1/1;
+  width: 100%;
+  position: absolute;
+  background-image: url("/ImagesPing/disque.png");
+  background-size: 100%;
+  background-repeat: no-repeat;
+  animation: spin 4s infinite linear;
+  z-index: -1;
+  top:0;
+ }
   .music-player h1 {
-    font-size: 2em;
-    margin-bottom: 20px;
+    font-size: 1.8em;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    padding: 10px
   }
   
   .music-player audio {
@@ -16,18 +43,22 @@
   .music-player .controls {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 40px;
+    background-size: contain;
   }
   
   .music-player .controls button {
+    background-position: center;
+    background-repeat: no-repeat;
     padding: 10px 20px;
-    font-size: 1em;
     cursor: pointer;
-    border: none;
     background-color: #4A91C3; /* New darker blue color */
     color: white;
     border-radius: 5px;
-    transition: background-color 0.3s;
+    border: 0.5px solid black;
+    height: 40px;
+    background-size: contain;
+    
   }
   
   .music-player .controls button:hover {
