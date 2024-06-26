@@ -17,5 +17,7 @@
     "OpenFolder": "Ouvrir un dossier",
     "Terminal": "Invite de commandes",
     "Errors": "Erreurs",
-    "Output": "Sortie"
+    "Output": "Sortie",
+    "ChooseFiles": "Selectionner des fichiers",
+    "files": "fichier(s)"
   }

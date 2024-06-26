@@ -17,6 +17,8 @@
     "OpenFolder": "Atidarykite aplanką",
     "Terminal": "Komandų eilutė",
     "Errors": "Klaidos",
-    "Output": "Išėjimas"
+    "Output": "Išėjimas",
+    "ChooseFiles": "Failų pasirinkimas",
+    "files": "failas(-ai)"
   }
   

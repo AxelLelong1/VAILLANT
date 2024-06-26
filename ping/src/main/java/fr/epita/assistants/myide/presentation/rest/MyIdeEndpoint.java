@@ -1,12 +1,8 @@
 package fr.epita.assistants.myide.presentation.rest;
 
 import fr.epita.assistants.MyIde;
-import fr.epita.assistants.myide.domain.entity.IDENode;
+import fr.epita.assistants.myide.domain.entity.*;
 import fr.epita.assistants.myide.domain.service.IDENodeService;
-import fr.epita.assistants.myide.domain.entity.Feature;
-import fr.epita.assistants.myide.domain.entity.Mandatory;
-import fr.epita.assistants.myide.domain.entity.Node;
-import fr.epita.assistants.myide.domain.entity.Project;
 import fr.epita.assistants.myide.domain.service.ProjectService;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -20,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Path("/api")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -572,5 +569,17 @@ public class MyIdeEndpoint {
 
         Logger.log("Command output: " + output.toString());
         return Response.ok(new CommandResponse(output.toString())).build();
+    }
+
+    @GET @Path("/getAspects")
+    public Response getAspects()
+    {
+        Set<Aspect> aspects = currProject.getAspects();
+        ArrayList<String> aspectsStr = new ArrayList<>();
+        for (Aspect a : aspects) {
+            Logger.log(a.toString());
+            aspectsStr.add(a.getType().toString());
+        }
+        return Response.ok(new AspectsResponse(aspectsStr.toString())).build();
     }
 }

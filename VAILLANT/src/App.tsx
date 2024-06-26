@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState/*, useEffect*/ } from 'react';
 import FileTree from './FileTree';
 import FileSelectionButton from './OpenFolder';
 import FileCreationButton from './NewFile'
@@ -6,6 +6,7 @@ import EditorComponent from './CodeEditor';
 import { useTranslation } from 'react-i18next';
 import './translation';
 import Terminal from './Terminal';
+import { GitAddButton, GitCommitButton, GitPushButton } from './Git';
 
 import "../css/IDE.css"
 import "../css/arbo.css"
@@ -18,11 +19,12 @@ import FileBarComponent from './FileBar';
 const App: React.FC = () => {
 
     const [selectedFolderPath, setSelectedFolderPath] = useState<string>('');
+    //const [aspects, setAspects] = useState<string[]>([]);
     const { t, i18n } = useTranslation();
 
     function handleFolderSelect(folderPath: string) {
-    setSelectedFolderPath(folderPath);
-  }
+      setSelectedFolderPath(folderPath);
+    }
     
     const handleFileCreation = () => {
     };
@@ -30,7 +32,34 @@ const App: React.FC = () => {
     const changeLanguage = (lng: string) => {
       i18n.changeLanguage(lng);
     };
+
     
+    let gitAspect = false;
+/*
+    async function getAspects() {
+        try {
+          const response = await fetch('http://localhost:8080/api/getAspects', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          });
+        
+          const data = await response.json();
+          console.log(data);
+          return data.aspects.slice(' ');
+        } catch (error) {
+          console.error('Error fetching aspects:', error);
+        } 
+    };
+
+    
+    const value = await getAspects();
+    console.log(value);
+    setAspects(getAspects.toString().slice(' '));
+    gitAspect = aspects.includes("GIT");
+    */
+
     return (
     <div>
         {/* Task bar */}
@@ -83,6 +112,21 @@ const App: React.FC = () => {
                 </li>
                 <li className="nav__submenu-item ">
                   <a>{t('Search')}</a>
+                </li>
+              </ul>
+            </li>
+
+            <li className="nav__menu-item" aria-disabled={!gitAspect}>
+              <a>Git</a>
+              <ul className="nav__submenu">
+                <li className="nav__submenu-item ">
+                  <a><GitAddButton projectPath={selectedFolderPath}/></a>
+                </li>
+                <li className="nav__submenu-item ">
+                  <a><GitCommitButton projectPath={selectedFolderPath}/></a>
+                </li>
+                <li className="nav__submenu-item ">
+                  <a><GitPushButton projectPath={selectedFolderPath}/></a>
                 </li>
               </ul>
             </li>
