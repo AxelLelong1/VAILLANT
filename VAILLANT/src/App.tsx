@@ -166,14 +166,11 @@ const App: React.FC = () => {
             <div className="right-menu">
             <nav className="nav">
               <ul className="nav__menu">
-                <li className="nav__menu-item">
-                  <a onClick={toggleAIMenu}>AI</a>
-                </li>
-              
-                <li>
-                <button className="nav__menu-item" onClick={theme}>
+              <button className="nav__menu-item" onClick={theme}>
                   <a><img src={`/ImagesPing${isDarkMode ? "/black.png" : "/white.png"}`} style= {{ width: '20px', height: '20px', margin: '0 2px' }} alt="Theme"/></a>
                 </button>
+                <li className="nav__menu-item">
+                  <a onClick={toggleAIMenu}>AI</a>
                 </li>
               </ul>
             </nav>
@@ -187,7 +184,10 @@ const App: React.FC = () => {
         {/* Files handling pane */}
         <div className={`files-pane ${isDarkMode ? "black" : ""}`}>
             {selectedFolderPath && <FileTree folderPath={selectedFolderPath} />}
+            <div className='MUSICA'><p>MUSIQUE</p></div>
         </div>
+
+        
 
         <div className="ruby-pane">
             {/* Open files list */}
