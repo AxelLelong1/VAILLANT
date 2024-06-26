@@ -8,6 +8,11 @@
     box-sizing: border-box;
 }
 
+.filetree
+{
+    height: 65%;
+}
+
 .ligne {
     background-color: #FF6392;
     padding: .10%;
