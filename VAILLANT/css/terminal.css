@@ -73,13 +73,17 @@
 
 .tab-content.dark {
     display: none;
-    padding: 5%;
-    background-color: #a81c39;
+    padding: 5px;
+    background-color: #ad2944;
     height: 100%; /* Adjust for tab height and borders */
     overflow-y: auto;
 }
 
 .tab-content.active {
+    display: block;
+}
+
+.tab-content.active.dark {
     display: block;
 }
 
@@ -94,7 +98,25 @@
     overflow-y: auto; 
 }
 
+
+.terminal.black {
+    background-color: #a81c39;
+    color: white;
+    padding: 10px;
+    font-family: monospace;
+    height:100%;
+    max-height: 100%;
+    min-height: 30%;
+    overflow-y: auto; 
+}
+
 .terminal-output {
+    max-height: 90%;
+    height:90%;
+    overflow-y: auto;
+}
+
+.terminal-output.black {
     max-height: 90%;
     height:90%;
     overflow-y: auto;
@@ -113,6 +135,15 @@
 
 .terminal-input input {
     background: #E65486;
+    border: none;
+    color: white;
+    flex-grow: 1;
+    font-family: monospace;
+    outline: none;
+}
+
+.terminal-input.black input {
+    background: #a81c39;
     border: none;
     color: white;
     flex-grow: 1;

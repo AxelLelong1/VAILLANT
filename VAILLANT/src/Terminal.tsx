@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useTheme } from './ThemeContext';
 
 const Terminal: React.FC = () => {
+    const { isDarkMode } = useTheme();
     const [command, setCommand] = useState<string>('');
     const [output, setOutput] = useState<string[]>([]);
     const [currentPath, setCurrentPath] = useState<string>('/');
@@ -48,13 +50,13 @@ const Terminal: React.FC = () => {
     };
 
     return (
-            <div className="terminal">
-                <div className="terminal-output">
+            <div className={`terminal ${isDarkMode ? "black" : ""}`}>
+                <div className={`terminal-output ${isDarkMode ? "black" : ""}`}>
                     {output.map((line, index) => (
                         <pre key={index}>{line}</pre>
                     ))}
                 </div>
-                <div className="terminal-input">
+                <div className={`terminal-input ${isDarkMode ? "black" : ""}`}>
                     <span className="terminal-path">{currentPath} $ </span>
                     <input
                         type="text"

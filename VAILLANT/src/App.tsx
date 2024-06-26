@@ -238,8 +238,7 @@ const App: React.FC = () => {
                 <div className={`tab ${isDarkMode ? "dark" : ""}`} id="output-tab">{t('Output')}</div>
             </div>
             <div className={`tab-content active ${isDarkMode ? "dark" : ""}`} id="terminal-content">
-                <pre id="terminal-output"></pre>
-
+                <Terminal />
             </div>
             <div className={`tab-content ${isDarkMode ? "dark" : ""}`} id="errors-content">
                 <ul id="errors-list"></ul>
