@@ -5,6 +5,7 @@ import FileCreationButton from './NewFile'
 import EditorComponent from './CodeEditor';
 import { useTranslation } from 'react-i18next';
 import './translation';
+import Terminal from './Terminal';
 
 import "../css/IDE.css"
 import "../css/arbo.css"
@@ -124,7 +125,7 @@ const App: React.FC = () => {
                 <div className="tab" id="output-tab">{t('Output')}</div>
             </div>
             <div className="tab-content active" id="terminal-content">
-                <pre id="terminal-output"></pre>
+              <Terminal />
             </div>
             <div className="tab-content" id="errors-content">
                 <ul id="errors-list"></ul>

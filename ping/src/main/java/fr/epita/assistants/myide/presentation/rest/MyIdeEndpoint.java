@@ -541,4 +541,36 @@ public class MyIdeEndpoint {
             return logRespErr(400, "File cannot be compile");
         }
     }
+
+    @POST @Path("/execute-command")
+    public Response executeCommand(CommandRequest req)
+    {
+        if (req == null || req.command() == null)
+            return logRespErr(400, "Command is null");
+        String command = req.command();
+        Logger.log("Executing command: " + command);
+
+        StringBuilder output = new StringBuilder();
+        try {
+            Process process = Runtime.getRuntime().exec(command);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append("\n");
+            }
+
+            while ((line = errorReader.readLine()) != null) {
+                output.append(line).append("\n");
+            }
+
+            process.waitFor();
+        } catch (Exception e) {
+            return logRespErr(500, "Command execution failed: " + e.getMessage());
+        }
+
+        Logger.log("Command output: " + output.toString());
+        return Response.ok(new CommandResponse(output.toString())).build();
+    }
 }
