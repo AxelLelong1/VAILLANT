@@ -3,6 +3,8 @@ import FileTree from './FileTree';
 import FileSelectionButton from './OpenFolder';
 import FileCreationButton from './NewFile'
 import EditorComponent from './CodeEditor';
+import { useTranslation } from 'react-i18next';
+import './translation';
 
 import "../css/IDE.css"
 import "../css/arbo.css"
@@ -15,12 +17,17 @@ import FileBarComponent from './FileBar';
 const App: React.FC = () => {
 
     const [selectedFolderPath, setSelectedFolderPath] = useState<string>('');
+    const { t, i18n } = useTranslation();
 
-    const handleFolderSelect = (folderPath: string) => {
-        setSelectedFolderPath(folderPath);
-    };
+    function handleFolderSelect(folderPath: string) {
+    setSelectedFolderPath(folderPath);
+  }
     
     const handleFileCreation = () => {
+    };
+
+    const changeLanguage = (lng: string) => {
+      i18n.changeLanguage(lng);
     };
     
     return (
@@ -30,14 +37,14 @@ const App: React.FC = () => {
         <nav className="nav">
           <ul className="nav__menu">
             <li className="nav__menu-item">
-              <a>Fichier</a>
+              <a>{t('File')}</a>
               <ul className="nav__submenu">
                 <li className="nav__submenu-item ">
                   <a><FileCreationButton onFileCreation={handleFileCreation}/></a>
                 </li>
 
                 <li className="nav__submenu-item ">
-                  <a>Ouvrir ...</a>
+                  <a>{t('Open')}</a>
                 </li>
 
                 <li className="nav__submenu-item ">
@@ -45,48 +52,48 @@ const App: React.FC = () => {
                 </li>
 
                 <li className="nav__submenu-item ">
-                  <a>Sauvegarder</a>
+                  <a>{t('Save')}</a>
                 </li>
                 <li className="nav__submenu-item ">
-                  <a>Sauvegarder sous ...</a>
+                  <a>{t('SaveAs')}</a>
                 </li>
               </ul>
             </li>
             
             <li className="nav__menu-item">
-              <a>Edition</a>
+              <a>{t('Edit')}</a>
               <ul className="nav__submenu">
                 <li className="nav__submenu-item ">
-                  <a>Annuler</a>
+                  <a>{t('Undo')}</a>
                 </li>
 
                 <li className="nav__submenu-item ">
-                  <a>Rétablir</a>
+                  <a>{t('Redo')}</a>
                 </li>
 
                 <li className="nav__submenu-item ">
-                  <a>Copier</a>
+                  <a>{t('Copy')}</a>
                 </li>
                 <li className="nav__submenu-item ">
-                  <a>Couper</a>
+                  <a>{t('Cut')}</a>
                 </li>
                 <li className="nav__submenu-item ">
-                  <a>Coller</a>
+                  <a>{t('Paste')}</a>
                 </li>
                 <li className="nav__submenu-item ">
-                  <a>Rechercher</a>
+                  <a>{t('Search')}</a>
                 </li>
               </ul>
             </li>
 
             <li className="nav__menu-item">
-                <a>Langage</a>
+                <a>{t('Language')}</a>
                 <ul className="nav__submenu">
-                    <li className="nav__submenu-item ">
-                        <a>Français</a>
+                    <li className="nav__submenu-item " onClick={() => changeLanguage('fr')}>
+                        <a>{t('French')}</a>
                     </li>
-                    <li className="nav__submenu-item ">
-                        <a>Lietuviškas</a>
+                    <li className="nav__submenu-item " onClick={() => changeLanguage('lt')}>
+                        <a>{t('Lithuanian')}</a>
                     </li>
                 </ul>
             </li>
@@ -112,9 +119,9 @@ const App: React.FC = () => {
             {/* Bottom pane for terminal, logs, etc. */}
             <div className="bottom-pane">
             <div className="tabbed-pane">
-                <div className="tab-active" id="terminal-tab">Terminal</div>
-                <div className="tab" id="errors-tab">Erreurs</div>
-                <div className="tab" id="output-tab">Sortie</div>
+                <div className="tab-active" id="terminal-tab">{t('Terminal')}</div>
+                <div className="tab" id="errors-tab">{t('Errors')}</div>
+                <div className="tab" id="output-tab">{t('Output')}</div>
             </div>
             <div className="tab-content active" id="terminal-content">
                 <pre id="terminal-output"></pre>

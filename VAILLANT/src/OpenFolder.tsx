@@ -1,10 +1,12 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface FolderSelectionInputProps {
     onFolderSelect: (folderPath: string) => void;
 }
 
 const FolderSelectionInput: React.FC<FolderSelectionInputProps> = ({ onFolderSelect }) => {
+    const { t } = useTranslation();
     const handleFileInputChange = (event: Event) => {
         const target = event.target as HTMLInputElement;
         const files = target.files;
@@ -28,7 +30,7 @@ const FolderSelectionInput: React.FC<FolderSelectionInputProps> = ({ onFolderSel
 
     return (
         <div onClick={handleButtonClick}>
-            Ouvrir un dossier ...
+            {t('OpenFolder')}
         </div>
     );
 };
