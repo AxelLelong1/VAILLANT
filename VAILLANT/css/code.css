@@ -7,15 +7,6 @@
     margin-left: 10px;  
 }
 
-#code {
-    width: 100%;
-    height: calc(100% - 20px); /* Adjust height as needed */
-    resize: none;
-    border: 1px solid #ccc;
-    padding: 10px;
-    font-family: monospace;
-}
-
 .menu-container {
     text-align: center;
 }
@@ -63,8 +54,20 @@ nav ul {
 
 .editor{
     background-color: white;
+    width: 100%;
+    height: calc(100% - 20px); /* Adjust height as needed */
+    resize: none;
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-family: monospace;
 }
 
 .editor.dark{
     background-color: #1e1e1e;
+    width: 100%;
+    height: calc(100% - 20px); /* Adjust height as needed */
+    resize: none;
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-family: monospace;
 }

@@ -1,20 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
 import MonacoEditor, { EditorDidMount, monaco } from 'react-monaco-editor';
 import { useTheme } from './ThemeContext';
+
 import "../css/bomb.css"
 
 interface EditorComponentProps {
     filePath: string;
+    content: string;
+    onContentChange: (newContent: string) => void;
 }
 
-const EditorComponent: React.FC<EditorComponentProps> = ({ filePath }) => {
-    const {isDarkMode} = useTheme();
+const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentChange }) => {
+    const { isDarkMode } = useTheme();
     const [code, setCode] = useState<string>(''); // State to hold the code
     const [cursorLine, setCursorLine] = useState<number>(0); // State to hold the cursor position
     const [remainingTime, setRemainingTime] = useState<number>(0); // State to hold the remaining time
     const intervalRef = useRef<number | null>(null); // Ref to keep track of the interval
     const isFocusedRef = useRef<boolean>(true); // Ref to keep track of the editor focus state
-    const filePathh = "bonjour.txt";
+
     const list_bomb =  ["/ImagesPing/BombTimer/Bomb0.png",
         "/ImagesPing/BombTimer/Bomb1.png",
         "/ImagesPing/BombTimer/Bomb2.png",
@@ -31,7 +34,6 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath }) => {
         "/ImagesPing/BombTimer/Bomb13.png",
         "/ImagesPing/BombTimer/Bomb14.png",
         "/ImagesPing/BombTimer/Bomb15.png"];
-
 
     // Fetch the file content when the component mounts
     useEffect(() => {
@@ -75,6 +77,7 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath }) => {
     // Handler for editor content change
     const handleEditorChange = (newValue: string) => {
         setCode(newValue);
+        onContentChange(newValue);
     };
 
     const deleteLine = (editor: monaco.editor.IStandaloneCodeEditor, lineNumber: number) => {
@@ -179,7 +182,7 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath }) => {
 
         editor.onDidChangeCursorPosition(() => {
             const position = editor.getPosition();
-            if (position != null && cursorLine != position.lineNumber) {
+            if (position != null && cursorLine !== position.lineNumber) {
                 setCursorLine(position.lineNumber);
                 // Clear the previous timer if it exists
                 if (intervalRef.current !== null) {
@@ -220,7 +223,7 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath }) => {
     };
 
     return (
-        <div id="code" className={`${isDarkMode ? "editor dark" : "editor"}`}>
+        <div className={`${isDarkMode ? "editor dark" : "editor"}`}>
             <MonacoEditor
                 width="99.9%"
                 height="70%"

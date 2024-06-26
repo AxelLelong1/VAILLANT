@@ -21,12 +21,24 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
     const [showModal, setShowModal] = useState<boolean>(false);
     const [errorCount, setErrorCount] = useState<number>(0);
     const [nbLives, setNbLives] = useState<number>(5);
+    const [fileContents, setFileContents] = useState<{ [key: string]: string }>({});
+
+    useEffect(() => {
+        if (files.length > 0 && !activeFile) {
+            onFileSelect(files[0]);
+        }
+    }, [files]);
 
     const totalLives = 5;
     const fullHearts = nbLives;
     const emptyHearts = totalLives - nbLives;
 
     const handleRun = async () => {
+        
+        if (!activeFile || !fileContents[activeFile]) {
+            return;
+        }
+
         try {
             console.log("running code");
             const response = await fetch('http://localhost:8080/api/compile', {
@@ -34,8 +46,7 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ content: "def greet(name)\n    puts \"Hello, \" + name\nend\n# 1ère erreur : appel de méthode avec le mauvais nombre d'arguments\n greet(\"mathieu\")\n# 2ème erreur : utilisation d'une variable non définie\nputs \"mathieu\"\n# 3ème erreur : syntaxe incorrecte\n\n    puts \"Hi Alice\"\n\n"
-                })
+                body: JSON.stringify({ content: fileContents[activeFile] })
             });
             console.log("running code: trying response");
             if (!response.ok) {
@@ -71,6 +82,13 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
         }
     };
 
+    const handleFileContentChange = (filePath: string, newContent: string) => {
+        setFileContents((prevContents) => ({
+            ...prevContents,
+            [filePath]: newContent
+        }));
+    };
+
     return (
         <div style={{ height: '80%' }}>
             <div className={`open-files-bar ${isDarkMode ? "black" : ""}`} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -99,7 +117,15 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
                 </>
                 <Modal show={showModal} errors={runError} onClose={handleCloseModal} errorcount={errorCount} />
             </div>
-            {activeFile && <EditorComponent key={activeFile} filePath={activeFile} />}
+            {files.map((file) => (
+                <div className={`${isDarkMode ? "editor dark" : "editor"}`} key={file} style={{ display: activeFile === file ? 'flex' : 'none' }}>
+                    <EditorComponent
+                        filePath={file}
+                        content={fileContents[file] || ""}
+                        onContentChange={(newContent: string) => handleFileContentChange(file, newContent)}
+                    />
+                </div>
+            ))}
         </div>
     );
 };
