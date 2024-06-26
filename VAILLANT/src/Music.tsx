@@ -6,8 +6,9 @@ const tracks = [
   { title: 'I wanna Dance NCS', file: '/music/PYTI - I Wanna Dance Techno NCS .mp3' },
   { title: 'Only The Fallen NCS', file: '/music/Zeli - Only The Fallen Techno NCS - .mp3' },
   { title: 'Rave Teacher  NCS', file: '/music/KEVU - Rave Teacher Techno NCS.mp3' },
+  { title: 'Everen Maxwell Hyperphantasia NCS', file: '/music/Everen Maxwell - Hyperphantasia.mp3' },
+  { title: 'AdhesiveWombat - Night Shade ♫ NCS', file: '/music/AdhesiveWombat - Night Shade ♫.mp3' },
 ];
-
 const MusicPlayer: React.FC = () => {
   const [currentTrack, setCurrentTrack] = useState(0);
   const [PlayPause, setPlayPause] = useState<Boolean>(true);
@@ -43,7 +44,7 @@ const MusicPlayer: React.FC = () => {
 
   return (
     <div className='music-player'>
-      <h1>Musique</h1>
+      <h1>♫</h1>
       <div className="bubble"></div>
       <audio ref={audioRef} src={tracks[currentTrack].file} controls autoPlay />
       <div className='controls  '>
