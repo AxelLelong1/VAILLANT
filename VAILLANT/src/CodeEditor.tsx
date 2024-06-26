@@ -1,48 +1,45 @@
 import React, { useState, useEffect, useRef } from 'react';
 import MonacoEditor, { EditorDidMount, monaco } from 'react-monaco-editor';
 
-const EditorComponent: React.FC = () => {
+interface EditorComponentProps {
+    filePath: string;
+}
+
+const EditorComponent: React.FC<EditorComponentProps> = ({ filePath }) => {
     const [code, setCode] = useState<string>(''); // State to hold the code
     const [cursorLine, setCursorLine] = useState<number>(0); // State to hold the cursor position
     const [remainingTime, setRemainingTime] = useState<number>(0); // State to hold the remaining time
     const intervalRef = useRef<number | null>(null); // Ref to keep track of the interval
     const isFocusedRef = useRef<boolean>(true); // Ref to keep track of the editor focus state
-    const filePath = 'bonjour.txt'; // Replace with your file path
 
     // Fetch the file content when the component mounts
     useEffect(() => {
         const fetchFileContent = async () => {
-            // Decommenter le if quand on aura bien fait le filePath
-            //if (filePath != '')
-            //{
-                try {
-                // Open the file
+            try {
                 await fetch('http://localhost:8080/api/open/file', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ path: '../projets/' + filePath }),
+                    body: JSON.stringify({ path: filePath }),
                 });
 
-                // Get the file content
                 const response = await fetch('http://localhost:8080/api/content', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ path: '../projets/' + filePath }),
+                    body: JSON.stringify({ path: filePath }),
                 });
 
                 if (!response.ok) {
                     throw new Error('Failed to fetch file content');
                 }
                 const data = await response.text();
-                setCode(data); // Set the fetched content to the editor
-                } catch (error) {
-                    console.error('Error fetching file content:', error);
-                }
-            //}
+                setCode(data); 
+            } catch (error) {
+                console.error('Error fetching file content:', error);
+            }
         };
 
         fetchFileContent();
@@ -52,7 +49,7 @@ const EditorComponent: React.FC = () => {
                 clearInterval(intervalRef.current);
             }
         };
-    }, []);
+    }, [filePath]);
 
     // Handler for editor content change
     const handleEditorChange = (newValue: string) => {

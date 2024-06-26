@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import '../css/run.css';
-import Modal from './Modal'; 
+import Modal from './Modal';
+import EditorComponent from './CodeEditor'; // Make sure the EditorComponent is correctly imported
+import OpenedFileComponent from './OpenedFileComponent'; // Correct import of OpenedFileComponent
+
 
 const useOpenedFiles = () => {
     const [files, setFiles] = useState<string[]>([]);
@@ -37,19 +40,13 @@ const useOpenedFiles = () => {
     return { files, error, nbLives, setNbLives };
 };
 
-
-const OpenedFileComponent: React.FC<{ filename: string }> = ({ filename }) => {
-    return (
-        <li>{(filename.split('/').reverse()[0])}</li>
-    );
-};
-
 const FileBarComponent: React.FC = () => {
     const { files, error, nbLives } = useOpenedFiles();
     const [runError, setRunError] = useState<string | null>(null);
     const [runOutput, setRunOutput] = useState<string | null>(null);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [errorCount, setErrorCount] = useState<number>(0);
+    const [activeFile, setActiveFile] = useState<string | null>(files[0] || null);
 
     const totalLives = 5;
     const fullHearts = nbLives;
@@ -100,6 +97,7 @@ const FileBarComponent: React.FC = () => {
     };
 
     return (
+        <div>
         <div className="open-files-bar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             {error ? (
                 <p>{error}</p>
@@ -107,7 +105,7 @@ const FileBarComponent: React.FC = () => {
                 <>
                     <ul id="open-files-list">
                         {files.map((file, index) => (
-                            <OpenedFileComponent key={index} filename={file} />
+                            <OpenedFileComponent key={index} filename={file} onClick={() => setActiveFile(file)} />
                         ))}
                     </ul>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -126,6 +124,8 @@ const FileBarComponent: React.FC = () => {
                 </>
             )}
             <Modal show={showModal} errors={runError} onClose={handleCloseModal} errorcount={errorCount}/>
+        </div>
+        {activeFile && <EditorComponent key={activeFile} filePath={activeFile} />}
         </div>
     );
 };
