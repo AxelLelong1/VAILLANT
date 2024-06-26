@@ -1,0 +1,12 @@
+.btn-wide {
+    background-color: #E5CD52;
+    width: 100%;
+    margin: 5px;
+    border-radius: 50px;
+    color: black;
+    font-size: small;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

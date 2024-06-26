@@ -14,10 +14,9 @@ interface FileTreeProps {
 
 const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick }) => {
     const [fileTree, setFileTree] = useState<FileTreeNode | null>(null);
-    const [isFetching, setIsFetching] = useState(false);
 
     useEffect(() => {
-        if (folderPath.length !== 0 && !isFetching) {
+        if (folderPath.length !== 0) {
             fetchFileTree();
         } else {
             // Clear file tree when no folderPath is provided
@@ -40,7 +39,6 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick }) => {
     
 
     const handleFileClick = ({ defaultOnClick, nodeData }) => {
-        console.log(nodeData);
         const path = getPathFromIndices(nodeData.path, fileTree);
         if (path) {
             if (nodeData.isOpen == undefined)
@@ -76,9 +74,6 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick }) => {
             const path = getPathFromIndices(before, fileTree);
             const pos = path.lastIndexOf('/');
             const newpath = path.substring(0, pos+1) + name;
-
-            console.log(path);
-            console.log(newpath);
 
             const response = await fetch('http://localhost:8080/api/move', {
                 method: 'POST',
