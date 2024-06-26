@@ -14,6 +14,7 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath }) => {
     const [remainingTime, setRemainingTime] = useState<number>(0); // State to hold the remaining time
     const intervalRef = useRef<number | null>(null); // Ref to keep track of the interval
     const isFocusedRef = useRef<boolean>(true); // Ref to keep track of the editor focus state
+    const filePathh = "bonjour.txt";
 
     // Fetch the file content when the component mounts
     useEffect(() => {
@@ -24,7 +25,7 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath }) => {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ path: filePath }),
+                    body: JSON.stringify({ path: "../Projets/" + filePath }),
                 });
 
                 const response = await fetch('http://localhost:8080/api/content', {
@@ -32,7 +33,7 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath }) => {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ path: filePath }),
+                    body: JSON.stringify({ path: "../Projets/" + filePath }),
                 });
 
                 if (!response.ok) {

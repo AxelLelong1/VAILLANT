@@ -22,26 +22,46 @@ import { useTheme } from './ThemeContext';
 
 const App: React.FC = () => {
   const { toggleTheme, isDarkMode } = useTheme();
+  const [selectedFolderPath, setSelectedFolderPath] = useState<string>('');
+  const [isAIMenuVisible, setIsAIMenuVisible] = useState<boolean>(false);
+  const [openedFiles, setOpenedFiles] = useState<string[]>([]);
+  const [activeFile, setActiveFile] = useState<string | null>(null);
 
   const theme = () => {
     toggleTheme();
   };
-    const [selectedFolderPath, setSelectedFolderPath] = useState<string>('');
-    const [isAIMenuVisible, setIsAIMenuVisible] = useState<boolean>(false);
 
-    const handleFolderSelect = (folderPath: string) => {
-        setSelectedFolderPath(folderPath);
-    };
-    const handleFileCreation = () => {
-    };
+  const handleFolderSelect = (folderPath: string) => {
+      setSelectedFolderPath(folderPath);
+  };
+  const handleFileCreation = () => {
+  };
 
-    const toggleAIMenu = () => {
-      setIsAIMenuVisible(!isAIMenuVisible);
-    };
+  const toggleAIMenu = () => {
+    setIsAIMenuVisible(!isAIMenuVisible);
+  };
 
-    const closeAIMenu = () => {
-      setIsAIMenuVisible(false);
-    };
+  const closeAIMenu = () => {
+    setIsAIMenuVisible(false);
+  };
+
+  const handleFileClick = (filePath: string) => {
+    if (!openedFiles.includes(filePath)) {
+        setOpenedFiles([...openedFiles, filePath]);
+    }
+    setActiveFile(filePath);
+  };
+
+  const handleFileRemove = (filePath: string) => {
+      setOpenedFiles(openedFiles.filter(file => file !== filePath));
+      if (activeFile === filePath) {
+          setActiveFile(openedFiles.length > 1 ? openedFiles[0] : null);
+      }
+  };
+
+  const handleFileSelect = (filePath: string) => {
+      setActiveFile(filePath);
+  };
     
     return (
     <div className={`${isDarkMode ? "dark-mode" : ""}`}>
@@ -135,7 +155,7 @@ const App: React.FC = () => {
         {/* Files handling pane */}
         <div className={`files-pane ${isDarkMode ? "black" : ""}`}>
           <div className='filetree'>
-            {selectedFolderPath && <FileTree folderPath={selectedFolderPath} />}
+            {selectedFolderPath && <FileTree folderPath={selectedFolderPath} onFileClick={handleFileClick} />}
           </div>
           <div className='MUSICA'>
             <MusicPlayer />
@@ -146,7 +166,12 @@ const App: React.FC = () => {
 
         <div className="ruby-pane">
             {/* Open files list */}
-            <FileBarComponent />
+            <FileBarComponent
+                        files={openedFiles}
+                        onFileRemove={handleFileRemove}
+                        onFileSelect={handleFileSelect}
+                        activeFile={activeFile}
+                    />
 
             {/* Bottom pane for terminal, logs, etc. */}
             <div className="bottom-pane">
