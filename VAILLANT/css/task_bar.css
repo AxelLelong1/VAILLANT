@@ -63,6 +63,11 @@ nav ul {
     position: relative;
 }
 
+.nav__menu-item.deactivate {
+    pointer-events:none;
+    opacity:0.3;
+}
+
 .nav__menu-item:hover .nav__submenu {
     display: block;
 }

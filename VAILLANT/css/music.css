@@ -2,13 +2,12 @@
 .music-player {
     text-align: center;
     color: white;
-    margin-top: 70px;
     animation: move 3s infinite linear ;
     z-index: 1;
   }
 @keyframes move {
     0% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
+    50% { transform: translateY(-10px); }
     100% { transform: translateY(0); }
 }
 
@@ -65,5 +64,4 @@
   
   .music-player p {
     font-size: 1.2em;
-    margin-top: 20px;
   }

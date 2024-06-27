@@ -1,4 +1,7 @@
 /* ARBORESENCE */
+.filetree{
+    overflow-y: auto;
+}
 
 .files-pane {
     width: 10% ;
@@ -6,8 +9,9 @@
     background-color: #5AA9e6;
     /*background: linear-gradient(to right, #ff9a9e, #fad0c4, #b1f5fc);*/
     padding: 10px;
+    position: relative;
     resize: horizontal;
-    overflow-y: auto;
+    overflow:hidden;
 }
 
 .files-pane.black {

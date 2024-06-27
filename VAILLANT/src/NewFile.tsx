@@ -13,7 +13,7 @@ const FileCreationInput: React.FC<FileOpeningInputProps> = ({ onFileCreation }) 
         if (files && files.length > 0) {
             console.log(files[0])
             const folderPath = files[0].webkitRelativePath?.split('/')[0] ?? '';
-            onFileCreation("../Projets/" + folderPath);
+            onFileCreation(folderPath);
         }
     };
 

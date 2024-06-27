@@ -11,9 +11,10 @@ interface FileTreeNode {
 interface FileTreeProps {
     folderPath: string;
     onFileClick: (filePath: string) => void;
+    onFetchComplete: () => void;
 }
 
-const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick }) => {
+const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick, onFetchComplete }) => {
     // State for managing the tree structure displayed in UI
     const [fileTree, setFileTree] = useState<FileTreeNode | null>(null);
 
@@ -50,6 +51,7 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick }) => {
             console.error('Error fetching file tree:', error);
         } finally {
             setIsFetching(false);
+            onFetchComplete();
         }
     }, [folderPath]);
 
@@ -81,7 +83,7 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick }) => {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ src: "../Projets/" + path, dst: "../Projets/" + newpath })
+                    body: JSON.stringify({ src: folderPath + path, dst: folderPath + newpath })
                 });
 
                 if (response.ok) {
@@ -114,7 +116,7 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick }) => {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ path: "../Projets/" + newPath })
+                    body: JSON.stringify({ path: folderPath + newPath })
                 });
 
                 if (response.ok) {
@@ -142,7 +144,7 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick }) => {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ path: "../Projets/" + path})
+                    body: JSON.stringify({ path: folderPath + path})
                 });
 
                 if (response.ok) {
@@ -181,7 +183,7 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick }) => {
     // Function to get path from indices
     const getPathFromIndices = (indices, tree) => {
         let current = tree;
-        let path = current.name;
+        let path = "";//current.name;
         for (const index of indices) {
             if (!current.children || current.children.length <= index) {
                 return null;
@@ -207,3 +209,4 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick }) => {
 };
 
 export default FileTree;
+
