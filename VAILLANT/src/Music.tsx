@@ -3,10 +3,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import "../css/music.css"
 
 const tracks = [
-  { title: 'I Got Choo', file: '/music/unrailed-ost-04-i-got-choo.mp3' },
-  { title: 'Ghost Driver', file: '/music/unrailed-ost-11-ghost-driver.mp3' },
+  { title: 'I wanna Dance NCS', file: '/music/PYTI - I Wanna Dance Techno NCS .mp3' },
+  { title: 'Only The Fallen NCS', file: '/music/Zeli - Only The Fallen Techno NCS - .mp3' },
+  { title: 'Rave Teacher  NCS', file: '/music/KEVU - Rave Teacher Techno NCS.mp3' },
+  { title: 'Everen Maxwell Hyperphantasia NCS', file: '/music/Everen Maxwell - Hyperphantasia.mp3' },
+  { title: 'AdhesiveWombat - Night Shade ♫ NCS', file: '/music/AdhesiveWombat - Night Shade ♫.mp3' },
 ];
-
 const MusicPlayer: React.FC = () => {
   const [currentTrack, setCurrentTrack] = useState(0);
   const [PlayPause, setPlayPause] = useState<Boolean>(true);
@@ -43,11 +45,12 @@ const MusicPlayer: React.FC = () => {
 
   return (
     <div className='music-player'>
-      <h1>Music Player</h1>
+      <h1>♫</h1>
+      <div className="bubble"></div>
       <audio ref={audioRef} src={tracks[currentTrack].file} controls autoPlay />
       <div className='controls  '>
-        <button onClick={handlePlayPause}>{PlayPause? "Play" : "Pause" }</button>
-        <button onClick={handleNext}>Next</button>
+        <button onClick={handlePlayPause} style={{backgroundImage:  PlayPause? "url(/ImagesPing/play.png)" : "url(/ImagesPing/pause.png)"}}></button>
+        <button onClick={handleNext} style={{backgroundImage: "url(/ImagesPing/next.png"}}></button>
       </div>
       <p>Currently playing: {tracks[currentTrack].title}</p>
     </div>
