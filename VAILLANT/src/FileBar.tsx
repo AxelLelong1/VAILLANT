@@ -97,7 +97,7 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
                         {files.map((file, index) => (
                             <li key={index} className={activeFile === file ? 'active' : ''}>
                                 <OpenedFileComponent filename={file} onClick={() => onFileSelect(file)} />
-                                <button onClick={() => onFileRemove(file)}>Remove</button>
+                                <button className='delete' onClick={() => onFileRemove(file)}></button>
                             </li>
                         ))}
                     </ul>
