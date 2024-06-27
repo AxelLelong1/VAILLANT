@@ -17,10 +17,10 @@ interface FileBarComponentProps {
 const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove, onFileSelect, activeFile }) => {
     const { isDarkMode } = useTheme();
     const [runError, setRunError] = useState<string | null>(null);
-    const [runOutput, setRunOutput] = useState<string | null>(null);
+    const [/*runOutput*/, setRunOutput] = useState<string | null>(null);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [errorCount, setErrorCount] = useState<number>(0);
-    const [nbLives, setNbLives] = useState<number>(5);
+    const [nbLives, /*setNbLives*/] = useState<number>(5);
     const [fileContents, setFileContents] = useState<{ [key: string]: string }>({});
 
     useEffect(() => {

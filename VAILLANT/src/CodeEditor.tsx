@@ -81,7 +81,7 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentCh
     };
 
     const deleteLine = (editor: monaco.editor.IStandaloneCodeEditor, lineNumber: number) => {
-        /*const model = editor.getModel();
+        const model = editor.getModel();
         if (model) {
             const range = new monaco.Range(lineNumber, 1, lineNumber, model.getLineMaxColumn(lineNumber));
             const from = range.getStartPosition;
@@ -115,7 +115,7 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentCh
                 .catch((error) => {
                     console.error('Error deleting line:', error); // Handle error
                 });
-        }*/
+        }
     };
 
     const editorDidMount: EditorDidMount = (editor, monaco) => {
@@ -189,6 +189,7 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentCh
                     clearInterval(intervalRef.current);
                 }
                 setRemainingTime(15);
+                // @ts-ignore 
                 intervalRef.current = setInterval(() => {
                     setRemainingTime((prevTime) => {
                         if (prevTime < 1) {

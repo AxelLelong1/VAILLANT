@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import FolderTree from 'react-folder-tree';
 import 'react-folder-tree/dist/style.css';
 
@@ -54,6 +54,7 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick }) => {
     }, [folderPath]);
 
     // Function to handle file/folder click
+    // @ts-ignore 
     const handleFileClick = ({ defaultOnClick, nodeData }) => {
         const path = getPathFromIndices(nodeData.path, fileTree);
         if (path) {
@@ -66,6 +67,7 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick }) => {
         defaultOnClick();
     };
 
+    // @ts-ignore 
     const changeName = async (before, name) => {
         if (init)
             setInit(false);
@@ -97,6 +99,7 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick }) => {
     };
 
     // Function to add a file or folder
+    // @ts-ignore 
     const addFile = async (path, isFolder) => {
         if (init)
             setInit(false);
@@ -129,6 +132,7 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick }) => {
             setInit(true);
     }};
 
+    // @ts-ignore 
     const deleteNode = async (node) => {
         if (init)
             setInit(false);
@@ -158,6 +162,7 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick }) => {
     };
 
     // Function to handle tree state changes (rename, delete, add)
+    // @ts-ignore 
     const onTreeStateChange = (state, event) => {
 
         console.log(event);
@@ -179,6 +184,7 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick }) => {
     };
 
     // Function to get path from indices
+    // @ts-ignore 
     const getPathFromIndices = (indices, tree) => {
         let current = tree;
         let path = current.name;
