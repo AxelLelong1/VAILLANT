@@ -61,6 +61,9 @@ nav ul {
 .nav__menu-item {
     display: inline-block;
     position: relative;
+    background: rgba(0, 0, 0, 0);
+}
+}
 }
 
 .nav__menu-item:hover .nav__submenu {

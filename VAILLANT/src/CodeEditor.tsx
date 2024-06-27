@@ -83,8 +83,8 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentCh
     };
 
     const deleteLine = (editor: monaco.editor.IStandaloneCodeEditor, lineNumber: number) => {
-        setFullHearts(fullHearts - 1);
-        setEmptyHearts(emptyHearts + 1);
+        /*setFullHearts(fullHearts - 1);
+        setEmptyHearts(emptyHearts + 1);*/
         /*const model = editor.getModel();
         if (model) {
             const range = new monaco.Range(lineNumber, 1, lineNumber, model.getLineMaxColumn(lineNumber));
@@ -225,6 +225,12 @@ EditorComponent
         automaticLayout: true,
         language: 'ruby' // Specify language for syntax highlighting
     };
+    const explosionSoundRef = useRef(null);
+    useEffect(() => {
+        if (remainingTime === 0 && explosionSoundRef.current) {
+            explosionSoundRef.current.play();
+        }
+    }, [remainingTime]);
 
     return (
         <div className={`${isDarkMode ? "editor dark" : "editor"}`}>
@@ -244,6 +250,7 @@ EditorComponent
             ) : (
                 <div className="explosion"></div>
             )}
+                <audio ref={explosionSoundRef} src="/music/explosion.mp3" />
             </div>
         </div>
     );
