@@ -29,9 +29,9 @@
     margin: 0;
 }
 
-.open-files-bar li {
+.open-files-bar ul>li {
     display: inline-block; /* Display items horizontally */
-    padding: 5px 10px;
+    padding: 5px 20px;
     color: black;
     margin-right: 10px;
     cursor: pointer;
@@ -51,4 +51,15 @@
 {
     display: 'flex';
     align-items: 'center';
+}
+
+.delete{
+    background-image: url("/ImagesPing/croix.png");
+    width: 0.8em;
+    height: 1.45em;
+    margin-left: 10px;
+    background-size: 100%;
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-color: rgba(0, 0, 0, 0);
 }

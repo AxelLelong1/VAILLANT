@@ -7,9 +7,9 @@ interface OpenedFileProps {
 
 const OpenedFileComponent: React.FC<OpenedFileProps> = ({ filename, onClick }) => {
     return (
-        <li onClick={onClick} style={{ cursor: 'pointer' }}>
+        <span onClick={onClick} style={{ cursor: 'pointer' }}>
             {filename.split('/').reverse()[0]}
-        </li>
+        </span>
     );
 };
 
