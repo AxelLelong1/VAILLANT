@@ -1,6 +1,26 @@
 .bomb
 {
-    height: 100%;
-    width: 7%;
+    height: 100px;
+    width: 100px;
     float: right;
+    background-size: contain;
+    object-fit: contain;
 }
+
+.explosion {
+    height: 100px;
+    width: 100px;
+    float: right;
+    background-image: url('/ImagesPing/BombExplosion/Bomb0.png');
+    background-size: contain;
+    animation: explode 2s steps(5) forwards;
+  }
+
+  @keyframes explode {
+    0% { background-image: url('/ImagesPing/BombExplosion/Bomb1.png'); }
+    20% { background-image: url('/ImagesPing/BombExplosion/Bomb2.png'); }
+    40% { background-image: url('/ImagesPing/BombExplosion/Bomb3.png'); }
+    60% { background-image: url('/ImagesPing/BombExplosion/Bomb4.png'); }
+    80% { background-image: url('/ImagesPing/BombExplosion/Bomb5.png'); }
+    100% { background-image: url('/ImagesPing/BombExplosion/Bomb6.png'); }
+  }
