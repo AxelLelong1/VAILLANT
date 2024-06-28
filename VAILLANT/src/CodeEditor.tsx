@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import MonacoEditor, { EditorDidMount, monaco } from 'react-monaco-editor';
 import { useTheme } from './ThemeContext';
+import { useHearts } from './HeartContext';
 
 import "../css/bomb.css"
 
@@ -10,13 +11,14 @@ interface EditorComponentProps {
     onContentChange: (newContent: string) => void;
 }
 
-const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentChange }) => {
+const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentChange}) => {
     const { isDarkMode } = useTheme();
     const [code, setCode] = useState<string>(''); // State to hold the code
     const [cursorLine, setCursorLine] = useState<number>(0); // State to hold the cursor position
     const [remainingTime, setRemainingTime] = useState<number>(0); // State to hold the remaining time
     const intervalRef = useRef<number | null>(null); // Ref to keep track of the interval
     const isFocusedRef = useRef<boolean>(true); // Ref to keep track of the editor focus state
+    const { fullHearts, emptyHearts, setFullHearts, setEmptyHearts } = useHearts();
 
     const list_bomb =  ["/ImagesPing/BombTimer/Bomb0.png",
         "/ImagesPing/BombTimer/Bomb1.png",
@@ -81,6 +83,8 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentCh
     };
 
     const deleteLine = (editor: monaco.editor.IStandaloneCodeEditor, lineNumber: number) => {
+        /*setFullHearts(fullHearts - 1);
+        setEmptyHearts(emptyHearts + 1);*/
         /*const model = editor.getModel();
         if (model) {
             const range = new monaco.Range(lineNumber, 1, lineNumber, model.getLineMaxColumn(lineNumber));
@@ -95,7 +99,7 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentCh
                 to: to,
                 content: '',
             };
-
+EditorComponent
             fetch('/api/update/file', {
                 method: 'POST',
                 headers: {
@@ -221,6 +225,12 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentCh
         automaticLayout: true,
         language: 'ruby' // Specify language for syntax highlighting
     };
+    const explosionSoundRef = useRef(null);
+    useEffect(() => {
+        if (remainingTime === 0 && explosionSoundRef.current) {
+            explosionSoundRef.current.play();
+        }
+    }, [remainingTime]);
 
     return (
         <div className={`${isDarkMode ? "editor dark" : "editor"}`}>
@@ -234,7 +244,13 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentCh
                 onChange={handleEditorChange}
                 editorDidMount={editorDidMount}
             />
-            <div> <img className='bomb' src={`${list_bomb[remainingTime]}`}></img>
+            <div>
+            {remainingTime !== 0 ? (
+                <img className='bomb' src={`${list_bomb[remainingTime]}`}></img>
+            ) : (
+                <div className="explosion"></div>
+            )}
+                <audio ref={explosionSoundRef} src="/music/explosion.mp3" />
             </div>
         </div>
     );

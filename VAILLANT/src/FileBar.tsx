@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import '../css/run.css';
 import Modal from './Modal';
 
 import { useTheme } from './ThemeContext';
+import { useHearts } from './HeartContext'
 
 import EditorComponent from './CodeEditor'; // Make sure the EditorComponent is correctly imported
 import OpenedFileComponent from './OpenedFileComponent'; // Correct import of OpenedFileComponent
@@ -20,7 +21,7 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
     const [runOutput, setRunOutput] = useState<string | null>(null);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [errorCount, setErrorCount] = useState<number>(0);
-    const [nbLives, setNbLives] = useState<number>(5);
+    const { fullHearts, emptyHearts, setFullHearts, setEmptyHearts } = useHearts();
     const [fileContents, setFileContents] = useState<{ [key: string]: string }>({});
 
     useEffect(() => {
@@ -28,10 +29,6 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
             onFileSelect(files[0]);
         }
     }, [files]);
-
-    const totalLives = 5;
-    const fullHearts = nbLives;
-    const emptyHearts = totalLives - nbLives;
 
     const handleRun = async () => {
         
@@ -90,6 +87,9 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
             [filePath]: newContent
         }));
     };
+
+    useEffect(() => {
+    }, [emptyHearts, fullHearts]);
 
     return (
         <div style={{ height: '80%' }}>
