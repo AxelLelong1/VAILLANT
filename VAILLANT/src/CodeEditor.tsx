@@ -18,7 +18,7 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentCh
     const [remainingTime, setRemainingTime] = useState<number>(0); // State to hold the remaining time
     const intervalRef = useRef<number | null>(null); // Ref to keep track of the interval
     const isFocusedRef = useRef<boolean>(true); // Ref to keep track of the editor focus state
-    const { fullHearts, emptyHearts, setFullHearts, setEmptyHearts } = useHearts();
+    const { fullHearts, emptyHearts, setFullHearts, setEmptyHearts } = useHearts(); // A utiliser pour les vies
 
     const list_bomb =  ["/ImagesPing/BombTimer/Bomb0.png",
         "/ImagesPing/BombTimer/Bomb1.png",
