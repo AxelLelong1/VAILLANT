@@ -49,7 +49,7 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, folderPath,
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ path: folderPath + filePath }),
+                    body: JSON.stringify({ path: filePath }),
                 });
 
                 const response = await fetch('http://localhost:8080/api/content', {
@@ -57,7 +57,7 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, folderPath,
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ path: folderPath + filePath }),
+                    body: JSON.stringify({ path: filePath }),
                 });
 
                 if (!response.ok) {

@@ -13,9 +13,11 @@ interface FileBarComponentProps {
     onFileSelect: (filePath: string) => void;
     activeFile: string | null;
     folderPath: string;
+    filesContents: { [key: string]: string }
+    setFilesContents : React.Dispatch<React.SetStateAction<{[key: string]: string;}>>
 }
 
-const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove, onFileSelect, activeFile, folderPath }) => {
+const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove, onFileSelect, activeFile, folderPath, filesContents, setFilesContents }) => {
     const { isDarkMode } = useTheme();
     const [runError, setRunError] = useState<string | null>(null);
     const [/*runOutput*/, setRunOutput] = useState<string | null>(null);
@@ -24,7 +26,7 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
     const [heartsByFile, setHeartsByFile] = useState<{ [key: string]: number }>({});
 
 
-    const [fileContents, setFileContents] = useState<{ [key: string]: string }>({});
+    //const [fileContents, setFileContents] = useState<{ [key: string]: string }>({});
 
     useEffect(() => {
         // Initialize hearts for each file if not already set
@@ -42,7 +44,7 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
 
     const handleRun = async () => {
         
-        if (!activeFile || !fileContents[activeFile]) {
+        if (!activeFile || !filesContents[activeFile]) {
             return;
         }
 
@@ -53,7 +55,7 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ content: fileContents[activeFile] })
+                body: JSON.stringify({ content: filesContents[activeFile] })
             });
             console.log("running code: trying response");
             if (!response.ok) {
@@ -90,7 +92,7 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
     };
 
     const handleFileContentChange = (filePath: string, newContent: string) => {
-        setFileContents((prevContents) => ({
+        setFilesContents((prevContents) => ({
             ...prevContents,
             [filePath]: newContent
         }));
@@ -137,7 +139,7 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
                     <EditorComponent
                         filePath={file}
                         folderPath={folderPath}
-                        content={fileContents[file] || ""}
+                        content={filesContents[file] || ""}
                         onContentChange={(newContent: string) => handleFileContentChange(file, newContent)}
                         onDeleteLine={() => handleDeleteLine(file)}
                     />

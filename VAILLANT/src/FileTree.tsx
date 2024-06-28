@@ -61,7 +61,7 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick, onFetchCom
         const path = getPathFromIndices(nodeData.path, fileTree);
         if (path) {
             if (nodeData.isOpen === undefined) {
-                onFileClick(path);
+                onFileClick(folderPath + path);
             }
         } else {
             console.error('Invalid path', nodeData.path);
@@ -106,8 +106,9 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick, onFetchCom
         if (init)
             setInit(false);
         else {
-            const folderPath = getPathFromIndices(path, fileTree);
-            const newPath = `${folderPath}/new ${isFolder ? 'folder' : 'file'}`;
+            const folderP = getPathFromIndices(path, fileTree);
+            console.log(folderP);
+            const newPath = `${folderP}/new ${isFolder ? 'folder' : 'file'}`;
 
             const url = isFolder
                 ? 'http://localhost:8080/api/create/folder'

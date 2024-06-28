@@ -324,8 +324,8 @@ public class MyIdeEndpoint {
                     return logRespErr(400, "File cannot be moved from " + req.src() + " to " + req.dst());
                 }
 
-            } else
-                return logRespErr(400, "File is not in the project from " + req.src() + " to " + req.dst());
+            }/* else
+                return logRespErr(400, "File is not in the project from " + req.src() + " to " + req.dst());*/
         }
         try {
             Files.move(path, path1);
@@ -584,5 +584,17 @@ public class MyIdeEndpoint {
             return Response.ok(new AspectsResponse(aspectsStr.toString())).build();
         }
         return Response.ok(new AspectsResponse("")).build();
+    }
+
+    @POST @Path("/isfolder")
+    public Response isfolder(PathRequest req)
+    {
+        if (req == null || req.path() == null)
+            return logRespErr(400, "Path is null");
+        /*if (Files.exists(Paths.get(req.path())))
+            return logRespErr(400, "Does not exists");*/
+        if (Files.isDirectory(Paths.get(req.path())))
+            return Response.ok(new IsFolderResponse(true)).build();
+        return Response.ok(new IsFolderResponse(false)).build();
     }
 }
