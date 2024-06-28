@@ -1,7 +1,10 @@
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import FileTree from './FileTree';
 import FileSelectionButton from './OpenFolder';
-import FileCreationButton from './NewFile'
+import FileCreationButton from './NewFile';
+import OuvrirSelectionInput from './Ouvrir';
+import SaveButton from './Save';
+import SaveAsButton from './SaveAs';
 
 //import EditorComponent from './CodeEditor';
 import AIComponent from './AI';
@@ -39,6 +42,8 @@ const App: React.FC = () => {
   const [isGitAspect, setIsGitAspect] = useState<boolean>(false);
   const [canfetch, setcanFetch] = useState<boolean>(false);
   const [aspectsList, setAspectsList] = useState<string[]>([]);
+
+  const [fileContents, setFileContents] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     console.log(canfetch);
@@ -111,11 +116,11 @@ const App: React.FC = () => {
               <a>{t('File')}</a>
               <ul className="nav__submenu">
                 <li className="nav__submenu-item ">
-                  <a><FileCreationButton onFileCreation={handleFileCreation}/></a>
+                  <a><FileCreationButton onFileCreation={handleFileClick}/></a>
                 </li>
 
                 <li className="nav__submenu-item ">
-                  <a>{t('Open')}</a>
+                  <a><OuvrirSelectionInput onFolderSelect={handleFolderSelect} onFileSelect={handleFileClick}/></a>
                 </li>
 
                 <li className="nav__submenu-item ">
@@ -123,10 +128,10 @@ const App: React.FC = () => {
                 </li>
 
                 <li className="nav__submenu-item ">
-                  <a>{t('Save')}</a>
+                  <a><SaveButton filePath={activeFile} filesContents={fileContents}/></a>
                 </li>
                 <li className="nav__submenu-item ">
-                  <a>{t('SaveAs')}</a>
+                  <a><SaveAsButton filePath={activeFile} filesContents={fileContents}/></a>
                 </li>
               </ul>
             </li>
@@ -224,6 +229,8 @@ const App: React.FC = () => {
                         onFileSelect={handleFileSelect}
                         activeFile={activeFile}
                         folderPath={selectedFolderPath}
+                        filesContents={fileContents}
+                        setFilesContents={setFileContents}
                     />
 
             {/* Bottom pane for terminal, logs, etc. */}
