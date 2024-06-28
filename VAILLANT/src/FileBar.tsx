@@ -103,6 +103,7 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
             ...prevHearts,
             [filePath]: Math.max(prevHearts[filePath] - 1, 0) // Ensure hearts don't go below 0
         }));
+        // Close and Delete file
     }
     return (
         <div style={{ height: '80%' }}>

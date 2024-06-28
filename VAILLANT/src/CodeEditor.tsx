@@ -92,14 +92,14 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, folderPath,
         setTimeout(() => {
             const model = editor.getModel();
             if (model) {
-                const range = new monaco.Range(lineNumber, 1, lineNumber + 1, 1);
+                const range = new monaco.Range(lineNumber, 1, lineNumber + 1, 0);
                 const operation = { range, text: '', forceMoveMarkers: true };
 
                 model.pushEditOperations([], [operation], () => null);
                 onDeleteLine();
             }
             debounceRef.current = false;
-        }, 1000); // Adjust timeout as needed
+        }, 100); // Adjust timeout as needed
 
 
     };
