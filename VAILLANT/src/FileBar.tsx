@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../css/run.css';
 import Modal from './Modal';
 
 import { useTheme } from './ThemeContext';
-import { useHearts } from './HeartContext'
 
 import EditorComponent from './CodeEditor'; // Make sure the EditorComponent is correctly imported
 import OpenedFileComponent from './OpenedFileComponent'; // Correct import of OpenedFileComponent
@@ -22,11 +21,20 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
     const [/*runOutput*/, setRunOutput] = useState<string | null>(null);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [errorCount, setErrorCount] = useState<number>(0);
-    const { fullHearts, emptyHearts, setFullHearts, setEmptyHearts } = useHearts();
+    const [heartsByFile, setHeartsByFile] = useState<{ [key: string]: number }>({});
+
 
     const [fileContents, setFileContents] = useState<{ [key: string]: string }>({});
 
     useEffect(() => {
+        // Initialize hearts for each file if not already set
+        if (Object.keys(heartsByFile).length === 0) {
+            const initialHearts: { [key: string]: number } = {};
+            files.forEach((file) => {
+                initialHearts[file] = 5;
+            });
+            setHeartsByFile(initialHearts);
+        }
         if (files.length > 0 && !activeFile) {
             onFileSelect(files[0]);
         }
@@ -57,8 +65,6 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
             if (data.nb_errors > 0) {
                 setErrorCount(data.nb_errors + errorCount);
                 setRunError(data.output);
-                setFullHearts((fullHearts) => fullHearts - 1); // Decrement lives
-                setEmptyHearts((EmptyHearts) => EmptyHearts + 1); // Decrement lives
                 setShowModal(true);
             } else {
                 setRunOutput(data.output);
@@ -71,8 +77,6 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
             console.error('Error running code:', error);
             setRunOutput(null);
             setErrorCount(0);
-            setFullHearts((fullHearts) => fullHearts - 1); // Decrement lives
-            setEmptyHearts((EmptyHearts) => EmptyHearts + 1); // Decrement lives
             setShowModal(false);
         }
     };
@@ -92,9 +96,12 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
         }));
     };
 
-    useEffect(() => {
-    }, [emptyHearts, fullHearts]);
-
+    const handleDeleteLine = (filePath: string) => {
+        setHeartsByFile((prevHearts) => ({
+            ...prevHearts,
+            [filePath]: Math.max(prevHearts[filePath] - 1, 0) // Ensure hearts don't go below 0
+        }));
+    }
     return (
         <div style={{ height: '80%' }}>
             <div className={`open-files-bar ${isDarkMode ? "black" : ""}`} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -111,14 +118,16 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
                         <button className="button-run" onClick={handleRun}>
                             <img src="/ImagesPing/BoutonRun.png" alt="Run" />
                         </button>
-                        <div id="life-bar" style={{ display: 'flex', alignItems: 'center' }}>
-                            {[...Array(emptyHearts)].map((_, index) => (
+                        {files.map((file) => (
+                        <div id="life-bar" style={{ display: activeFile === file ? 'flex' : 'none', alignItems: 'center' }}>
+                            {[...Array(5 - heartsByFile[file] || 0)].map((_, index) => (
                                 <img key={index} src="/ImagesPing/empty-heart.png" alt="Empty Heart" style={{ width: '20px', height: '20px', margin: '0 2px' }} />
                             ))}
-                            {[...Array(fullHearts)].map((_, index) => (
+                            {[...Array(heartsByFile[file] || 0)].map((_, index) => (
                                 <img key={index} src="/ImagesPing/full-heart.png" alt="Full Heart" style={{ width: '20px', height: '20px', margin: '0 2px' }} />
                             ))}
                         </div>
+                        ))}
                     </div>
                 </>
                 <Modal show={showModal} errors={runError} onClose={handleCloseModal} errorcount={errorCount} />
@@ -130,6 +139,7 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
                         folderPath={folderPath}
                         content={fileContents[file] || ""}
                         onContentChange={(newContent: string) => handleFileContentChange(file, newContent)}
+                        onDeleteLine={() => handleDeleteLine(file)}
                     />
                 </div>
             ))}

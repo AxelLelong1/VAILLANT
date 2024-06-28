@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import MonacoEditor, { EditorDidMount, monaco } from 'react-monaco-editor';
 import { useTheme } from './ThemeContext';
-import { useHearts } from './HeartContext';
 
 import "../css/bomb.css"
 
@@ -10,17 +9,19 @@ interface EditorComponentProps {
     folderPath: string;
     content: string;
     onContentChange: (newContent: string) => void;
+    onDeleteLine: () =>  void;
 }
 
 
-const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, folderPath, onContentChange }) => {
+const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, folderPath, onContentChange, onDeleteLine }) => {
     const { isDarkMode } = useTheme();
     const [code, setCode] = useState<string>(''); // State to hold the code
-    const [cursorLine, setCursorLine] = useState<number>(0); // State to hold the cursor position
+    const cursorLineRef = useRef<number>(0); // Ref to keep track of the cursor line
     const [remainingTime, setRemainingTime] = useState<number>(0); // State to hold the remaining time
     const intervalRef = useRef<number | null>(null); // Ref to keep track of the interval
     const isFocusedRef = useRef<boolean>(true); // Ref to keep track of the editor focus state
-    const { fullHearts, emptyHearts, setFullHearts, setEmptyHearts } = useHearts();
+    const debounceRef = useRef<boolean>(false);
+
 
     const list_bomb =  ["/ImagesPing/BombTimer/Bomb0.png",
         "/ImagesPing/BombTimer/Bomb1.png",
@@ -85,43 +86,22 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, folderPath,
     };
 
     const deleteLine = (editor: monaco.editor.IStandaloneCodeEditor, lineNumber: number) => {
-        setFullHearts((fullHearts) => fullHearts - 1); // Decrement lives
-        setEmptyHearts((EmptyHearts) => EmptyHearts + 1); // Decrement lives
-        /*const model = editor.getModel();
-        if (model) {
-            const range = new monaco.Range(lineNumber, 1, lineNumber, model.getLineMaxColumn(lineNumber));
-            const from = range.getStartPosition;
-            const to = range.getEndPosition;
-            // TODO: use real path
-            const path = "test.txt";
-            // Prepare the request payload
-            const payload = {
-                path: path,
-                from: from,
-                to: to,
-                content: '',
-            };
-EditorComponent
-            fetch('/api/update/file', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            })
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then((data) => {
-                    console.log(data); // Handle success response
-                })
-                .catch((error) => {
-                    console.error('Error deleting line:', error); // Handle error
-                });
-        }*/
+            
+        if (debounceRef.current) return;
+        debounceRef.current = true;
+        setTimeout(() => {
+            const model = editor.getModel();
+            if (model) {
+                const range = new monaco.Range(lineNumber, 1, lineNumber + 1, 1);
+                const operation = { range, text: '', forceMoveMarkers: true };
+
+                model.pushEditOperations([], [operation], () => null);
+                onDeleteLine();
+            }
+            debounceRef.current = false;
+        }, 1000); // Adjust timeout as needed
+
+
     };
 
     const editorDidMount: EditorDidMount = (editor, monaco) => {
@@ -188,8 +168,9 @@ EditorComponent
 
         editor.onDidChangeCursorPosition(() => {
             const position = editor.getPosition();
-            if (position != null && cursorLine !== position.lineNumber) {
-                setCursorLine(position.lineNumber);
+            if (position != null && cursorLineRef.current !== position.lineNumber) {
+                cursorLineRef.current = position.lineNumber;
+                console.log("CursorLine = " + cursorLineRef);
                 // Clear the previous timer if it exists
                 if (intervalRef.current !== null) {
                     clearInterval(intervalRef.current);
@@ -198,8 +179,8 @@ EditorComponent
                 // @ts-ignore 
                 intervalRef.current = setInterval(() => {
                     setRemainingTime((prevTime) => {
-                        if (prevTime < 1) {
-                            deleteLine(editor, cursorLine);
+                        if (prevTime === 0) {
+                            deleteLine(editor, cursorLineRef.current);    
                             return 15;
                         }
                         if (!isFocusedRef.current) // Cursor not active
@@ -259,3 +240,4 @@ EditorComponent
 };
 
 export default EditorComponent;
+
