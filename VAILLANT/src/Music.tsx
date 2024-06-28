@@ -1,6 +1,7 @@
 // src/components/MusicPlayer.tsx
 import React, { useState, useRef, useEffect } from 'react';
 import "../css/music.css"
+import { useTranslation } from 'react-i18next';
 
 const tracks = [
   { title: 'Samuel on t\'aime', file: 'music/IDE.mp3'},
@@ -14,6 +15,7 @@ const MusicPlayer: React.FC = () => {
   const [currentTrack, setCurrentTrack] = useState(0);
   const [PlayPause, setPlayPause] = useState<Boolean>(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { t } = useTranslation();
 
   const handlePlayPause = () => {
     setPlayPause(!PlayPause)
@@ -53,7 +55,7 @@ const MusicPlayer: React.FC = () => {
         <button onClick={handlePlayPause} style={{backgroundImage:  PlayPause? "url(/ImagesPing/play.png)" : "url(/ImagesPing/pause.png)"}}></button>
         <button onClick={handleNext} style={{backgroundImage: "url(/ImagesPing/next.png"}}></button>
       </div>
-      <p>Currently playing: {tracks[currentTrack].title}</p>
+      <p>{t('Playing')} {tracks[currentTrack].title}</p>
     </div>
   );
 };

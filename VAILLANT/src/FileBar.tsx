@@ -13,9 +13,10 @@ interface FileBarComponentProps {
     onFileRemove: (filePath: string) => void;
     onFileSelect: (filePath: string) => void;
     activeFile: string | null;
+    folderPath: string;
 }
 
-const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove, onFileSelect, activeFile }) => {
+const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove, onFileSelect, activeFile, folderPath }) => {
     const { isDarkMode } = useTheme();
     const [runError, setRunError] = useState<string | null>(null);
     const [/*runOutput*/, setRunOutput] = useState<string | null>(null);
@@ -126,6 +127,7 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
                 <div className={`${isDarkMode ? "editor dark" : "editor"}`} key={file} style={{ display: activeFile === file ? 'flex' : 'none' }}>
                     <EditorComponent
                         filePath={file}
+                        folderPath={folderPath}
                         content={fileContents[file] || ""}
                         onContentChange={(newContent: string) => handleFileContentChange(file, newContent)}
                     />

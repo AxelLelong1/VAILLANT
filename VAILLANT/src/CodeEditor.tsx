@@ -7,11 +7,13 @@ import "../css/bomb.css"
 
 interface EditorComponentProps {
     filePath: string;
+    folderPath: string;
     content: string;
     onContentChange: (newContent: string) => void;
 }
 
-const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentChange}) => {
+
+const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, folderPath, onContentChange }) => {
     const { isDarkMode } = useTheme();
     const [code, setCode] = useState<string>(''); // State to hold the code
     const [cursorLine, setCursorLine] = useState<number>(0); // State to hold the cursor position
@@ -46,7 +48,7 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentCh
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ path: "../Projets/" + filePath }),
+                    body: JSON.stringify({ path: folderPath + filePath }),
                 });
 
                 const response = await fetch('http://localhost:8080/api/content', {
@@ -54,7 +56,7 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentCh
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ path: "../Projets/" + filePath }),
+                    body: JSON.stringify({ path: folderPath + filePath }),
                 });
 
                 if (!response.ok) {

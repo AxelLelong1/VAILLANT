@@ -574,12 +574,15 @@ public class MyIdeEndpoint {
     @GET @Path("/getAspects")
     public Response getAspects()
     {
-        Set<Aspect> aspects = currProject.getAspects();
-        ArrayList<String> aspectsStr = new ArrayList<>();
-        for (Aspect a : aspects) {
-            Logger.log(a.toString());
-            aspectsStr.add(a.getType().toString());
+        if (currProject != null) {
+            Set<Aspect> aspects = currProject.getAspects();
+            ArrayList<String> aspectsStr = new ArrayList<>();
+            for (Aspect a : aspects) {
+                Logger.log(a.toString());
+                aspectsStr.add(a.getType().toString());
+            }
+            return Response.ok(new AspectsResponse(aspectsStr.toString())).build();
         }
-        return Response.ok(new AspectsResponse(aspectsStr.toString())).build();
+        return Response.ok(new AspectsResponse("")).build();
     }
 }

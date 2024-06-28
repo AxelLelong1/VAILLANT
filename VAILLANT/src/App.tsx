@@ -1,4 +1,4 @@
-import React, { useState/*, useEffect*/ } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import FileTree from './FileTree';
 import FileSelectionButton from './OpenFolder';
 import FileCreationButton from './NewFile'
@@ -25,6 +25,7 @@ import "../css/terminal.css"
 import "../css/ai.css"
 
 import { useTheme } from './ThemeContext';
+import { aspects } from './Aspects';
 
 
 
@@ -34,6 +35,25 @@ const App: React.FC = () => {
   const [isAIMenuVisible, setIsAIMenuVisible] = useState<boolean>(false);
   const [openedFiles, setOpenedFiles] = useState<string[]>([]);
   const [activeFile, setActiveFile] = useState<string | null>(null);
+
+  const [isGitAspect, setIsGitAspect] = useState<boolean>(false);
+  const [canfetch, setcanFetch] = useState<boolean>(false);
+  const [aspectsList, setAspectsList] = useState<string[]>([]);
+
+  useEffect(() => {
+    console.log(canfetch);
+    if (canfetch) {
+        const fetchAspects = async () => {
+            const asps = await aspects();
+            setAspectsList(asps);
+            setIsGitAspect(asps.includes('GIT'));
+        };
+        fetchAspects();
+        setcanFetch(false);
+    }
+  }, [canfetch===true]);
+  
+  const { t, i18n } = useTranslation();
 
   const theme = () => {
     toggleTheme();
@@ -71,38 +91,14 @@ const App: React.FC = () => {
       setActiveFile(filePath);
   };
 
-    //const [aspects, setAspects] = useState<string[]>([]);
-    const { t, i18n } = useTranslation();
+  const onFileTreeFetchComplete = useCallback(() => {
+    console.log("callback");
+    setcanFetch(true);
+  }, []);
 
-    const changeLanguage = (lng: string) => {
-      i18n.changeLanguage(lng);
-    };
-    
-    let gitAspect = false;
-/*
-    async function getAspects() {
-        try {
-          const response = await fetch('http://localhost:8080/api/getAspects', {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            }
-          });
-        
-          const data = await response.json();
-          console.log(data);
-          return data.aspects.slice(' ');
-        } catch (error) {
-          console.error('Error fetching aspects:', error);
-        } 
-    };
-
-    
-    const value = await getAspects();
-    console.log(value);
-    setAspects(getAspects.toString().slice(' '));
-    gitAspect = aspects.includes("GIT");
-    */
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+  };
 
     return (
     <div className={`${isDarkMode ? "dark-mode" : ""}`}>
@@ -161,7 +157,7 @@ const App: React.FC = () => {
               </ul>
             </li>
 
-            <li className="nav__menu-item" aria-disabled={!gitAspect}>
+            <li className={`nav__menu-item ${isGitAspect ? "" : "deactivate" }`}>
               <a>Git</a>
               <ul className="nav__submenu">
                 <li className="nav__submenu-item ">
@@ -211,7 +207,7 @@ const App: React.FC = () => {
         {/* Files handling pane */}
         <div className={`files-pane ${isDarkMode ? "black" : ""}`}>
           <div className='filetree'>
-            {selectedFolderPath && <FileTree folderPath={selectedFolderPath} onFileClick={handleFileClick} />}
+            {selectedFolderPath && <FileTree folderPath={selectedFolderPath} onFileClick={handleFileClick} onFetchComplete={onFileTreeFetchComplete}/>}
           </div>
           <div className='MUSICA'>
             <MusicPlayer />
@@ -227,6 +223,7 @@ const App: React.FC = () => {
                         onFileRemove={handleFileRemove}
                         onFileSelect={handleFileSelect}
                         activeFile={activeFile}
+                        folderPath={selectedFolderPath}
                     />
 
             {/* Bottom pane for terminal, logs, etc. */}
