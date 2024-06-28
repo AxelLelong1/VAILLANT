@@ -55,7 +55,8 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
             if (data.nb_errors > 0) {
                 setErrorCount(data.nb_errors + errorCount);
                 setRunError(data.output);
-                setNbLives((prevLives) => prevLives - 1); // Decrement lives
+                setFullHearts((fullHearts) => fullHearts - 1); // Decrement lives
+                setEmptyHearts((EmptyHearts) => EmptyHearts + 1); // Decrement lives
                 setShowModal(true);
             } else {
                 setRunOutput(data.output);
@@ -68,7 +69,8 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
             console.error('Error running code:', error);
             setRunOutput(null);
             setErrorCount(0);
-            setNbLives((prevLives) => prevLives - 1); // Decrement lives
+            setFullHearts((fullHearts) => fullHearts - 1); // Decrement lives
+            setEmptyHearts((EmptyHearts) => EmptyHearts + 1); // Decrement lives
             setShowModal(false);
         }
     };
