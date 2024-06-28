@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import FileTree from './FileTree';
 import FileSelectionButton from './OpenFolder';
 import FileCreationButton from './NewFile'
@@ -38,7 +38,7 @@ const App: React.FC = () => {
 
   const [isGitAspect, setIsGitAspect] = useState<boolean>(false);
   const [canfetch, setcanFetch] = useState<boolean>(false);
-  const [aspectsList, setAspectsList] = useState<string[]>([]);
+  const [/*aspectsList*/, setAspectsList] = useState<string[]>([]);
 
   useEffect(() => {
     console.log(canfetch);

@@ -1,7 +1,3 @@
-import { useState } from "react";
-
-
-
 export const aspects = async () =>  {
     try {
       const response = await fetch('http://localhost:8080/api/getAspects', {

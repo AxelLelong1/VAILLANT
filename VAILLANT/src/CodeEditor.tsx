@@ -20,6 +20,7 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, folderPath,
     const [remainingTime, setRemainingTime] = useState<number>(0); // State to hold the remaining time
     const intervalRef = useRef<number | null>(null); // Ref to keep track of the interval
     const isFocusedRef = useRef<boolean>(true); // Ref to keep track of the editor focus state
+    //@ts-ignore
     const { fullHearts, emptyHearts, setFullHearts, setEmptyHearts } = useHearts();
 
     const list_bomb =  ["/ImagesPing/BombTimer/Bomb0.png",
@@ -84,6 +85,7 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, folderPath,
         onContentChange(newValue);
     };
 
+    //@ts-ignore
     const deleteLine = (editor: monaco.editor.IStandaloneCodeEditor, lineNumber: number) => {
         setFullHearts((fullHearts) => fullHearts - 1); // Decrement lives
         setEmptyHearts((EmptyHearts) => EmptyHearts + 1); // Decrement lives
@@ -231,6 +233,7 @@ EditorComponent
     const explosionSoundRef = useRef(null);
     useEffect(() => {
         if (remainingTime === 0 && explosionSoundRef.current) {
+            //@ts-ignore
             explosionSoundRef.current.play();
         }
     }, [remainingTime]);

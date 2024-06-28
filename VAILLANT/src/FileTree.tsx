@@ -77,7 +77,9 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick, onFetchCom
         {
             try {
                 const path = getPathFromIndices(before, fileTree);
+                //@ts-ignore
                 const pos = path.lastIndexOf('/');
+                //@ts-ignore
                 const newpath = path.substring(0, pos + 1) + name;
 
                 const response = await fetch('http://localhost:8080/api/move', {
