@@ -251,9 +251,8 @@ EditorComponent
             {remainingTime !== 0 ? (
                 <img className='bomb' src={`${list_bomb[remainingTime]}`}></img>
             ) : (
-                <div className="explosion"></div>
+                <div className="explosion"><audio ref={explosionSoundRef} src="/music/explosion.mp3" /></div>
             )}
-                <audio ref={explosionSoundRef} src="/music/explosion.mp3" />
             </div>
         </div>
     );
