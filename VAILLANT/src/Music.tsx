@@ -4,6 +4,7 @@ import "../css/music.css"
 import { useTranslation } from 'react-i18next';
 
 const tracks = [
+  { title: 'Cette musique est mieux', file: 'music/IDE2.mp3'},
   { title: 'Samuel on t\'aime', file: 'music/IDE.mp3'},
   { title: 'I wanna Dance NCS', file: '/music/PYTI - I Wanna Dance Techno NCS .mp3' },
   { title: 'Only The Fallen NCS', file: '/music/Zeli - Only The Fallen Techno NCS - .mp3' },
