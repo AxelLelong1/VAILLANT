@@ -1,0 +1,9 @@
+appId: com.VAILLANT.id
+productName: VAILLANT
+directories:
+  output: dist
+files:
+  - build/**/* # Include the React build files
+  - main.js
+  - preload.js
+  - package.json

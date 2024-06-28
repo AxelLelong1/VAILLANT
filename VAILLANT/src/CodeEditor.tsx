@@ -83,8 +83,8 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentCh
     };
 
     const deleteLine = (editor: monaco.editor.IStandaloneCodeEditor, lineNumber: number) => {
-        /*setFullHearts(fullHearts - 1);
-        setEmptyHearts(emptyHearts + 1);*/
+        setFullHearts((fullHearts) => fullHearts - 1); // Decrement lives
+        setEmptyHearts((EmptyHearts) => EmptyHearts + 1); // Decrement lives
         /*const model = editor.getModel();
         if (model) {
             const range = new monaco.Range(lineNumber, 1, lineNumber, model.getLineMaxColumn(lineNumber));
@@ -193,6 +193,7 @@ EditorComponent
                     clearInterval(intervalRef.current);
                 }
                 setRemainingTime(15);
+                // @ts-ignore 
                 intervalRef.current = setInterval(() => {
                     setRemainingTime((prevTime) => {
                         if (prevTime < 1) {

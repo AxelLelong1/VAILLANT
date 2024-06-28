@@ -8,11 +8,10 @@ const groq = new Groq({
 });
 
 interface ChatBotProps {
-  setText: () => void; // Assuming setText is a function to handle button click
   onClose: () => void;
 }
 
-const ChatBot: React.FC<ChatBotProps> = ({ setText, onClose }) => {
+const ChatBot: React.FC<ChatBotProps> = ({ onClose }) => {
   const [inputText, setInputText] = useState<string>('');
   const [response, setResponse] = useState<string>('');
 

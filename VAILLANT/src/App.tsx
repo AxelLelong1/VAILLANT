@@ -249,7 +249,7 @@ const App: React.FC = () => {
             </div>
           </div>
           <div className={`ai-menu ${isAIMenuVisible ? 'visible' : ''}`}>
-            <AIComponent onClose={closeAIMenu} setText={() => {}} />
+            <AIComponent onClose={closeAIMenu} />
           </div>
         </div>
     </div>
