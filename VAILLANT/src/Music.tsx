@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import "../css/music.css"
 
 const tracks = [
+  { title: 'Samuel on t\'aime', file: 'music/IDE.mp3'},
   { title: 'I wanna Dance NCS', file: '/music/PYTI - I Wanna Dance Techno NCS .mp3' },
   { title: 'Only The Fallen NCS', file: '/music/Zeli - Only The Fallen Techno NCS - .mp3' },
   { title: 'Rave Teacher  NCS', file: '/music/KEVU - Rave Teacher Techno NCS.mp3' },
