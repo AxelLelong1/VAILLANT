@@ -12,9 +12,10 @@ interface FileTreeProps {
     folderPath: string;
     onFileClick: (filePath: string) => void;
     onFetchComplete: () => void;
+    onGitPullComplete: boolean;
 }
 
-const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick, onFetchComplete }) => {
+const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick, onFetchComplete, onGitPullComplete }) => {
     // State for managing the tree structure displayed in UI
     const [fileTree, setFileTree] = useState<FileTreeNode | null>(null);
 
@@ -29,7 +30,7 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick, onFetchCom
         } else {
             setFileTree(null);
         }
-    }, [folderPath]);
+    }, [folderPath, onGitPullComplete]);
 
     // Function to fetch the file tree from the server
     const fetchFileTree = useCallback(async () => {
