@@ -56,7 +56,7 @@ const App: React.FC = () => {
         fetchAspects();
         setcanFetch(false);
     }
-  }, [canfetch===true]);
+  }, [canfetch]);
   
   const { t, i18n } = useTranslation();
 
