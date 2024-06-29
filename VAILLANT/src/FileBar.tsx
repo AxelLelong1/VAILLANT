@@ -124,13 +124,13 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
                         {files.map((file) => (
                         <div id="life-bar" style={{ display: activeFile === file ? 'flex' : 'none', alignItems: 'center' }}>
                             {[...Array(5 - heartsByFile[file] || 0)].map((_, index) => (
-                                <img key={index} src="/ImagesPing/empty-heart.png" alt="Empty Heart" style={{ width: '20px', height: '20px', margin: '0 2px' }} />
+                                <img key={index} src="/ImagesPing/empty-heart.png" alt="Empty Heart" style={{ width: '15px', height: '15px', margin: '0 2px' }} />
                             ))}
                             {[...Array(heartsByFile[file] || 0)].map((_, index) => (
                                 <img key={index} src="/ImagesPing/full-heart.png" alt="Full Heart" style={{ width: '20px', height: '20px', margin: '0 2px' }} />
                             ))}
                         </div>
-                        ))}
+                        ))}/home/titomtrng/epita/VAILLANT/Projets
                     </div>
                 </>
                 <Modal show={showModal} errors={runError} onClose={handleCloseModal} errorcount={errorCount} />
