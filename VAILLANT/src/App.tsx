@@ -16,6 +16,7 @@ import { handleShortcutCopy, handleShortcutCut, handleShortcutPaste } from './Co
 import AIComponent from './AI';
 import FileBarComponent from './FileBar';
 import MusicPlayer from './Music';
+import Animation from './Animation';
 
 
 import { useTranslation } from 'react-i18next';
@@ -72,6 +73,9 @@ const App: React.FC = () => {
   const [editorByFile, setEditor] = useState<{[key: string]: monaco.editor.IStandaloneCodeEditor}>({})
 
   const fileContentsRef = useRef<{ [key: string]: string }>({});
+
+  const [showAnimation, setShowAnimation] = useState(false);
+
   
   useEffect(() => {
     activeFileRef.current = activeFile;
@@ -109,6 +113,10 @@ const App: React.FC = () => {
 
               if (response.ok) {
                   setIsRemove(true);
+                  setShowAnimation(true); // Afficher l'animation
+                  setTimeout(() => {
+                    setShowAnimation(false); // Masquer l'animation après 2 secondes
+                  }, 3000);
               } else {
                   console.error('Failed to remove the file');
               }
@@ -392,6 +400,7 @@ const App: React.FC = () => {
           </div>
           {isHelpMenuVisibleFr && <HelpMenuFr onClose={closeHelpMenuFr} isHelpMenuVisible={isHelpMenuVisibleFr}/>}
           {isHelpMenuVisibleLith && <HelpMenuLith onClose={closeHelpMenuLith} isHelpMenuVisible={isHelpMenuVisibleLith}/>}
+          <Animation visible={showAnimation} />
         </div>
     </div>
     );

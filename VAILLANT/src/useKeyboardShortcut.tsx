@@ -1,12 +1,15 @@
 import { useEffect } from 'react';
 
+//@ts-ignore
 const useKeyboardShortcut = (keyCombination, callback) => {
     console.log("We shorcut");
     
   useEffect(() => {
+    //@ts-ignore
     const handleKeyDown = (event) => {
       const keys = keyCombination.split('+');
       const key = keys.pop();
+      //@ts-ignore
       const isModifierPressed = keys.every((modifier) => {
         switch (modifier) {
           case 'Control':

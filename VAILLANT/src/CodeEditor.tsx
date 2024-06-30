@@ -11,17 +11,16 @@ interface EditorComponentProps {
     onAddEditor: (file: string, editor: monaco.editor.IStandaloneCodeEditor) => void;
     onContentChange: (newContent: string) => void;
     onDeleteLine: () => void;
+    activeFile: string | null;
 }
 
-
-const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentChange, onDeleteLine, onAddEditor }) => {
+const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentChange, onDeleteLine, onAddEditor, activeFile }) => {
     const { isDarkMode } = useTheme();
     const [code, setCode] = useState<string>(''); // State to hold the code
     const cursorLineRef = useRef<number>(0); // Ref to keep track of the cursor line
     const [remainingTime, setRemainingTime] = useState<number>(0); // State to hold the remaining time
     const intervalRef = useRef<number | null>(null); // Ref to keep track of the interval
-    const isFocusedRef = useRef<boolean>(true); // Ref to keep track of the editor focus state
-    
+    const isFocusedRef = useRef<boolean>(false); // Ref to keep track of the editor focus state
     const debounceRef = useRef<boolean>(false);
     const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
 
@@ -181,12 +180,12 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentCh
                 //@ts-ignore
                 intervalRef.current = setInterval(() => {
                     setRemainingTime((prevTime) => {
+                        if (!isFocusedRef.current || activeFile !== filePath) {
+                            return prevTime;
+                        }
                         if (prevTime === 0) {
                             deleteLine(editor, cursorLineRef.current);
                             return 15;
-                        }
-                        if (!isFocusedRef.current) {
-                            return prevTime;
                         }
                         return prevTime - 1;
                     });
