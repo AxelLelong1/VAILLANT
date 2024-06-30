@@ -170,7 +170,6 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, folderPath,
             const position = editor.getPosition();
             if (position != null && cursorLineRef.current !== position.lineNumber) {
                 cursorLineRef.current = position.lineNumber;
-                console.log("CursorLine = " + cursorLineRef);
                 // Clear the previous timer if it exists
                 if (intervalRef.current !== null) {
                     clearInterval(intervalRef.current);

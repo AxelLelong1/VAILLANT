@@ -14,10 +14,10 @@ interface FileBarComponentProps {
     activeFile: string | null;
     folderPath: string;
     filesContents: { [key: string]: string }
-    setFilesContents : React.Dispatch<React.SetStateAction<{[key: string]: string;}>>
+    //setFilesContents : React.Dispatch<React.SetStateAction<{[key: string]: string;}>>
 }
 
-const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove, onFileSelect, activeFile, folderPath, filesContents, setFilesContents }) => {
+const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove, onFileSelect, activeFile, folderPath, filesContents }) => {
     const { isDarkMode } = useTheme();
     const [runError, setRunError] = useState<string | null>(null);
     const [/*runOutput*/, setRunOutput] = useState<string | null>(null);
@@ -92,10 +92,7 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
     };
 
     const handleFileContentChange = (filePath: string, newContent: string) => {
-        setFilesContents((prevContents) => ({
-            ...prevContents,
-            [filePath]: newContent
-        }));
+            filesContents[filePath] = newContent
     };
 
     const handleDeleteLine = (filePath: string) => {

@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import FileTree from './FileTree';
 import FileSelectionButton from './OpenFolder';
 import FileCreationButton from './NewFile';
 import OuvrirSelectionInput from './Ouvrir';
-import SaveButton from './Save';
-import SaveAsButton from './SaveAs';
+import SaveButton, {handleSave} from './Save';
+import SaveAsButton, {handleSaveAs} from './SaveAs';
 
 //import EditorComponent from './CodeEditor';
 import AIComponent from './AI';
@@ -29,6 +29,8 @@ import "../css/ai.css"
 
 import { useTheme } from './ThemeContext';
 import { aspects } from './Aspects';
+import ShortcutsComponent from './ContentShortcutsComponent';
+import FileShortcutsComponent from './FileShortcutsComponent';
 
 
 
@@ -37,16 +39,16 @@ const App: React.FC = () => {
   const [selectedFolderPath, setSelectedFolderPath] = useState<string>('');
   const [isAIMenuVisible, setIsAIMenuVisible] = useState<boolean>(false);
   const [openedFiles, setOpenedFiles] = useState<string[]>([]);
-  const [activeFile, setActiveFile] = useState<string | null>(null);
+  const activeFileRef = useRef<string|null>(null);
 
   const [isGitAspect, setIsGitAspect] = useState<boolean>(false);
   const [canfetch, setcanFetch] = useState<boolean>(false);
   const [aspectsList, setAspectsList] = useState<string[]>([]);
 
-  const [fileContents, setFileContents] = useState<{ [key: string]: string }>({});
+  const fileContentsRef = useRef<{ [key: string]: string }>({});
+  
 
   useEffect(() => {
-    console.log(canfetch);
     if (canfetch) {
         const fetchAspects = async () => {
             const asps = await aspects();
@@ -82,18 +84,26 @@ const App: React.FC = () => {
     if (!openedFiles.includes(filePath)) {
         setOpenedFiles([...openedFiles, filePath]);
     }
-    setActiveFile(filePath);
+    activeFileRef.current = filePath;
   };
 
   const handleFileRemove = (filePath: string) => {
       setOpenedFiles(openedFiles.filter(file => file !== filePath));
-      if (activeFile === filePath) {
-          setActiveFile(openedFiles.length > 1 ? openedFiles[0] : null);
+      if (activeFileRef.current === filePath) {
+          activeFileRef.current = openedFiles.length > 1 ? openedFiles[0] : null;
       }
   };
 
+  const handleShortcutSave = () => {
+
+    handleSave(fileContentsRef.current, activeFileRef.current);
+  }
+
+  const handleShortcutSaveAs = ()=> {    
+    handleSaveAs(fileContentsRef.current, activeFileRef.current);
+  }
   const handleFileSelect = (filePath: string) => {
-      setActiveFile(filePath);
+      activeFileRef.current = filePath;
   };
 
   const onFileTreeFetchComplete = useCallback(() => {
@@ -107,6 +117,7 @@ const App: React.FC = () => {
 
     return (
     <div className={`${isDarkMode ? "dark-mode" : ""}`}>
+      <FileShortcutsComponent onShortcutSave={handleShortcutSave} onShortcutSaveAs={handleShortcutSaveAs}/>
         {/* Task bar */}
         <div className={`task-bar ${isDarkMode ? "dark" : ""}`}>
         <div className='left-menu'>
@@ -128,10 +139,10 @@ const App: React.FC = () => {
                 </li>
 
                 <li className="nav__submenu-item ">
-                  <a><SaveButton filePath={activeFile} filesContents={fileContents}/></a>
+                  <a><SaveButton filePath={activeFileRef.current} filesContents={fileContentsRef.current}/></a>
                 </li>
                 <li className="nav__submenu-item ">
-                  <a><SaveAsButton filePath={activeFile} filesContents={fileContents}/></a>
+                  <a><SaveAsButton filePath={activeFileRef.current} filesContents={fileContentsRef.current}/></a>
                 </li>
               </ul>
             </li>
@@ -227,10 +238,9 @@ const App: React.FC = () => {
                         files={openedFiles}
                         onFileRemove={handleFileRemove}
                         onFileSelect={handleFileSelect}
-                        activeFile={activeFile}
+                        activeFile={activeFileRef.current}
                         folderPath={selectedFolderPath}
-                        filesContents={fileContents}
-                        setFilesContents={setFileContents}
+                        filesContents={fileContentsRef.current}
                     />
 
             {/* Bottom pane for terminal, logs, etc. */}
