@@ -10,7 +10,7 @@ const tracks = [
   { title: 'Only The Fallen NCS', file: '/music/Zeli - Only The Fallen Techno NCS - .mp3' },
   { title: 'Rave Teacher  NCS', file: '/music/KEVU - Rave Teacher Techno NCS.mp3' },
   { title: 'Everen Maxwell Hyperphantasia NCS', file: '/music/Everen Maxwell - Hyperphantasia.mp3' },
-  { title: 'AdhesiveWombat - Night Shade ♫ NCS', file: '/music/AdhesiveWombat - Night Shade ♫.mp3' },
+  { title: 'AdhesiveWombat - Night Shade ♫ NCS', file: '/music/AdhesiveWombat - Night Shade.mp3' },
 ];
 const MusicPlayer: React.FC = () => {
   const [currentTrack, setCurrentTrack] = useState(0);
