@@ -31,13 +31,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AnySEARCH extends AnyFeatures implements Feature {
 
     @Override
     public Feature.ExecutionReport execute(Project project, Object... params) {
-        String text = (String) params[0];
+        List<String> par = (List<String>)params[0];
+        String text = par.get(0);
         List<Node> nodes = project.getRootNode().getChildren();
         Path indexDirPath = ((IDEProjectService)ps).getConfiguration().indexFile();  // Access the indexFile path from the configuration
 
@@ -49,9 +51,9 @@ public class AnySEARCH extends AnyFeatures implements Feature {
             try (IndexWriter writer = new IndexWriter(indexDirectory, config)) {
                 indexNodes(writer, project.getRootNode());
             }
-
             // Search the index
             List<Node> resultNodes = new ArrayList<>();
+            List<String> resultPaths = new ArrayList<>();
             try (DirectoryReader reader = DirectoryReader.open(indexDirectory)) {
                 IndexSearcher searcher = new IndexSearcher(reader);
                 QueryParser parser = new QueryParser("content", analyzer);
@@ -62,7 +64,7 @@ public class AnySEARCH extends AnyFeatures implements Feature {
                 for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
                     Document doc = searcher.doc(scoreDoc.doc);
                     Path path = Paths.get(doc.get("path"));
-                    // System.out.println(path.toString());
+                    resultPaths.add(path.toString());
                     Node node = findNodeByPath(project, nodes, path);
                     if (node != null) {
                         resultNodes.add(node);
@@ -77,10 +79,10 @@ public class AnySEARCH extends AnyFeatures implements Feature {
                     }
                 }
             }
-            return new SearchFeatureReport(resultNodes, !resultNodes.isEmpty());
+            return new SearchFeatureReport(resultNodes, resultPaths, true);
         } catch (IOException | ParseException e) {
-            Logger.logError("Error in AnySearch");
-            return new SearchFeatureReport(new ArrayList<>(), false);
+            Logger.logError("Error in AnySearch" + e.getMessage());
+            return new SearchFeatureReport(new ArrayList<>(), new ArrayList<>(), false);
         }
     }
 

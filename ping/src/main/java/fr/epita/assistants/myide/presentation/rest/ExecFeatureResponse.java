@@ -1,4 +1,4 @@
 package fr.epita.assistants.myide.presentation.rest;
 
-public record ExecFeatureResponse(String Success) {
+public record ExecFeatureResponse(String Success, String output) {
 }
