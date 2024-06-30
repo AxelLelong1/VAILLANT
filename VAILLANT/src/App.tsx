@@ -18,7 +18,8 @@ import './translation';
 import Terminal from './Terminal';
 import Output from './output';
 import Error from './Errors';
-import { GitAddButton, GitCommitButton, GitPushButton } from './Git';
+import { GitAddButton, GitCommitButton, /*GitPushButton,*/ } from './Git/Git';
+import { GitPullButton } from './Git/Gitpull';
 
 
 import "../css/IDE.css"
@@ -45,6 +46,7 @@ const App: React.FC = () => {
   const [isGitAspect, setIsGitAspect] = useState<boolean>(false);
   const [canfetch, setcanFetch] = useState<boolean>(false);
   const [aspectsList, setAspectsList] = useState<string[]>([]);
+  const [gitPullComplete, setGitPullComplete] = useState<boolean>(false);
 
   const [fileContents, setFileContents] = useState<{ [key: string]: string }>({});
   const [output, setOutput] = useState<string>("");
@@ -106,6 +108,11 @@ const App: React.FC = () => {
   const onFileTreeFetchComplete = useCallback(() => {
     console.log("callback");
     setcanFetch(true);
+  }, []);
+
+  const onGitPullComplete = useCallback(() => {
+    console.log("callback Git pull");
+    setGitPullComplete(prev => !prev);
   }, []);
 
   const changeLanguage = (lng: string) => {
@@ -182,8 +189,11 @@ const App: React.FC = () => {
                 <li className="nav__submenu-item ">
                   <a><GitCommitButton projectPath={selectedFolderPath}/></a>
                 </li>
-                <li className="nav__submenu-item ">
+                {/*<li className="nav__submenu-item ">
                   <a><GitPushButton projectPath={selectedFolderPath}/></a>
+                </li>*/}
+                <li className="nav__submenu-item ">
+                  <a><GitPullButton projectPath={selectedFolderPath} onGitPullComplete={onGitPullComplete}/></a>
                 </li>
               </ul>
             </li>
@@ -223,7 +233,7 @@ const App: React.FC = () => {
         {/* Files handling pane */}
         <div className={`files-pane ${isDarkMode ? "black" : ""}`}>
           <div className='filetree'>
-            {selectedFolderPath && <FileTree folderPath={selectedFolderPath} onFileClick={handleFileClick} onFetchComplete={onFileTreeFetchComplete}/>}
+            {selectedFolderPath && <FileTree folderPath={selectedFolderPath} onFileClick={handleFileClick} onFetchComplete={onFileTreeFetchComplete} onGitPullComplete={gitPullComplete}/>}
           </div>
           <div className='MUSICA'>
             <MusicPlayer />

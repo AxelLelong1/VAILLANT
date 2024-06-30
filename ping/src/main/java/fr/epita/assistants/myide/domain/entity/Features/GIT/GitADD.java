@@ -9,6 +9,8 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,8 +20,11 @@ public class GitADD extends GitFeatures implements Feature {
         Git git = findRepo(project);
         AddCommand add = git.add();
         try {
-            for (Object param : params) // To verify
+            for (String param : (List<String>)params[0]) // To verify
+            {
+                Logger.log(param.toString());
                 add.addFilepattern(param.toString());
+            }
 
             add.call();
 

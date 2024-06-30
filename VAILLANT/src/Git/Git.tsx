@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import "../css/Git.css"
+import "../../css/Git.css"
 import { useTranslation } from 'react-i18next';
 
 interface GitButtonProps {
@@ -17,8 +17,7 @@ const GitAddButton: React.FC<GitButtonProps> = ({ projectPath }) => {
     };
 
     const handleGitAdd = async () => {
-        const params = selectedFiles.join(' ');
-
+        console.log(selectedFiles);
         try {
         const response = await fetch('http://localhost:8080/api/execFeature', {
             method: 'POST',
@@ -26,13 +25,14 @@ const GitAddButton: React.FC<GitButtonProps> = ({ projectPath }) => {
             'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-            path: projectPath,
-            feature: 'ADD',
-            params: params
-            }),
-        });
+              feature: 'ADD',
+              params: selectedFiles,
+              project: projectPath
+            })
+          });
         const data = await response.json();
         console.log(data);
+        setSelectedFiles([]);
         } catch (error) {
             console.error('Error executing git add:', error);
         }
@@ -65,10 +65,10 @@ const GitCommitButton: React.FC<GitButtonProps> = ({ projectPath }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          path: projectPath,
           feature: 'COMMIT',
-          params: commitMessage
-        }),
+          params: [commitMessage],
+          project: projectPath
+        })
       });
       const data = await response.json();
       console.log(data);
@@ -79,7 +79,7 @@ const GitCommitButton: React.FC<GitButtonProps> = ({ projectPath }) => {
 
   return <div onClick={handleGitCommit}>Git Commit</div>;
 };
-
+/*
 const GitPushButton: React.FC<GitButtonProps> = ({ projectPath }) => {
   const handleGitPush = async () => {
     try {
@@ -89,9 +89,9 @@ const GitPushButton: React.FC<GitButtonProps> = ({ projectPath }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          path: projectPath,
           feature: 'PUSH',
-          params: ''
+          params: [],
+          project: projectPath,
         }),
       });
       const data = await response.json();
@@ -103,5 +103,6 @@ const GitPushButton: React.FC<GitButtonProps> = ({ projectPath }) => {
 
   return <div onClick={handleGitPush}>Git Push</div>;
 };
+*/
 
-export { GitAddButton, GitCommitButton, GitPushButton };
+export { GitAddButton, GitCommitButton, /*GitPushButton,*/ };
