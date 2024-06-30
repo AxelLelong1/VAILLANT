@@ -13,12 +13,16 @@
     "Search": "Rechercher",
     "Language": "Langage",
     "French": "Français",
-    "Lithuanian": "Lietuviškas",
+    "Lithuanian": "Lituanien",
     "OpenFolder": "Ouvrir un dossier",
     "Terminal": "Invite de commandes",
     "Errors": "Erreurs",
     "Output": "Sortie",
     "ChooseFiles": "Selectionner des fichiers",
     "files": "fichier(s)",
-    "Playing": "En cours de lecture :"
+    "Playing": "En cours de lecture :",
+    "Help": "Aide",
+    "AI": "IA",
+    "How can I help you": "En quoi puis-je vous aider ?",
+    "Go": "Envoyer"
   }

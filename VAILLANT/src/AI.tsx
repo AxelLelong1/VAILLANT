@@ -1,6 +1,7 @@
 // src/chatbot/ChatBot.tsx
 import React, { useState } from 'react';
 import Groq from 'groq-sdk';
+import { useTranslation } from 'react-i18next';
 
 const groq = new Groq({
   apiKey: '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',
@@ -14,6 +15,7 @@ interface ChatBotProps {
 const ChatBot: React.FC<ChatBotProps> = ({ onClose }) => {
   const [inputText, setInputText] = useState<string>('');
   const [response, setResponse] = useState<string>('');
+  const { t } = useTranslation();
 
   const getGroqChatCompletion = async (text: string) => {
     try {
@@ -57,7 +59,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ onClose }) => {
       <textarea
         value={inputText}
         onChange={(e) => setInputText(e.target.value)}
-        placeholder="En quoi puis-je vous aider ?"
+        placeholder={t("How can I help you")}
         style={{ width: '280px', height: '300px', resize:'none', backgroundColor: '#E6E6FA', border:'none', borderRadius: '4px', fontFamily: 'Arial, sans-serif', fontSize: '14px', color:'black'}}
       />
       <br />
@@ -72,7 +74,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ onClose }) => {
           fontFamily: 'Arial, sans-serif',
           fontSize: '14px',
         }}
-        onClick={() => getGroqChatCompletion(inputText)}>Go</button>
+        onClick={() => getGroqChatCompletion(inputText)}>{t('Go')}</button>
 
       <br />
       {response && <p>{response}</p>}
