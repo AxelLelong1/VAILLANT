@@ -504,17 +504,14 @@ public class MyIdeEndpoint {
     }
 
     @POST @Path("/compile")
-    public Response compileRubyCode(ContentRequest req) {
-        if (req == null  || req.content() == null)
+    public Response compileRubyCode(PathRequest req) {
+        if (req == null  || req.path() == null)
             return logRespErr(400, "File null");
-        String content = req.content();
+        String path = req.path();
         Logger.log("executing ruby code");
         try {
-            java.nio.file.Path tempFile = java.nio.file.Files.createTempFile("code", ".rb");
-            java.nio.file.Files.write(tempFile, content.getBytes());
-
             // Exécuter la commande Ruby
-            ProcessBuilder processBuilder = new ProcessBuilder("ruby", tempFile.toString());
+            ProcessBuilder processBuilder = new ProcessBuilder("ruby", path);
             processBuilder.redirectErrorStream(true);
             Process process = processBuilder.start();
 

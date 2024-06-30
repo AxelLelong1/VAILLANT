@@ -15,6 +15,8 @@ import MusicPlayer from './Music';
 import { useTranslation } from 'react-i18next';
 import './translation';
 import Terminal from './Terminal';
+import Output from './output';
+import Error from './Errors';
 import { GitAddButton, GitCommitButton, GitPushButton } from './Git';
 
 
@@ -44,6 +46,10 @@ const App: React.FC = () => {
   const [aspectsList, setAspectsList] = useState<string[]>([]);
 
   const [fileContents, setFileContents] = useState<{ [key: string]: string }>({});
+  const [output, setOutput] = useState<string>("");
+  const [errors, setErrors] = useState<string>("");
+
+  const [activeTab, setActiveTab] = useState<string>("terminal");
 
   useEffect(() => {
     console.log(canfetch);
@@ -56,7 +62,7 @@ const App: React.FC = () => {
         fetchAspects();
         setcanFetch(false);
     }
-  }, [canfetch]);
+  }, [canfetch===true]);
   
   const { t, i18n } = useTranslation();
 
@@ -103,6 +109,10 @@ const App: React.FC = () => {
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
+  };
+
+  const handleTabClick = (tab: string) => {
+    setActiveTab(tab);
   };
 
     return (
@@ -231,24 +241,28 @@ const App: React.FC = () => {
                         folderPath={selectedFolderPath}
                         filesContents={fileContents}
                         setFilesContents={setFileContents}
+                        output={output}
+                        setOutput={setOutput}
+                        errors={errors}
+                        setErrors={setErrors}
                     />
 
             {/* Bottom pane for terminal, logs, etc. */}
             <div className="bottom-pane">
 
             <div className={`tabbed-pane ${isDarkMode ? "dark" : ""}`}>
-                <div className={`tab-active ${isDarkMode ? "dark" : ""}`} id="terminal-tab">{t('Terminal')}</div>
-                <div className={`tab ${isDarkMode ? "dark" : ""}`} id="errors-tab">{t('Errors')}</div>
-                <div className={`tab ${isDarkMode ? "dark" : ""}`} id="output-tab">{t('Output')}</div>
+                <div className={`tab${activeTab === 'terminal' ? "-active" : ""} ${isDarkMode ? "dark" : ""}`} id="terminal-tab" onClick={() => handleTabClick('terminal')}>{t('Terminal')}</div>
+                <div className={`tab${activeTab === 'errors' ? "-active" : ""} ${isDarkMode ? "dark" : ""}`} id="errors-tab" onClick={() => handleTabClick('errors')}>{t('Errors')}</div>
+                <div className={`tab${activeTab === 'output' ? "-active" : ""} ${isDarkMode ? "dark" : ""}`} id="output-tab" onClick={() => handleTabClick('output')}>{t('Output')}</div>
             </div>
-            <div className={`tab-content active ${isDarkMode ? "dark" : ""}`} id="terminal-content">
+            <div className={`tab-content ${activeTab === 'terminal' ? "active" : ""} ${isDarkMode ? "dark" : ""}`} id="terminal-content">
                 <Terminal />
             </div>
-            <div className={`tab-content ${isDarkMode ? "dark" : ""}`} id="errors-content">
-                <ul id="errors-list"></ul>
+            <div className={`tab-content ${activeTab === 'errors' ? "active" : ""} ${isDarkMode ? "dark" : ""}`} id="errors-content">
+                <Error errors={errors}/>
             </div>
-            <div className={`tab-content ${isDarkMode ? "dark" : ""}`} id="output-content">
-                <pre id="output-display"></pre>
+            <div className={`tab-content ${activeTab === 'output' ? "active" : ""} ${isDarkMode ? "dark" : ""}`} id="output-content">
+                <Output output={output}/>
             </div>
             </div>
           </div>

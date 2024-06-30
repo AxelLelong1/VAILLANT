@@ -15,18 +15,17 @@ interface FileBarComponentProps {
     folderPath: string;
     filesContents: { [key: string]: string }
     setFilesContents : React.Dispatch<React.SetStateAction<{[key: string]: string;}>>
+    output: string;
+    setOutput: React.Dispatch<React.SetStateAction<string>>
+    errors: string;
+    setErrors: React.Dispatch<React.SetStateAction<string>>
 }
 
-const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove, onFileSelect, activeFile, folderPath, filesContents, setFilesContents }) => {
+const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove, onFileSelect, activeFile, folderPath, filesContents, setFilesContents, setOutput, setErrors, errors }) => {
     const { isDarkMode } = useTheme();
-    const [runError, setRunError] = useState<string | null>(null);
-    const [/*runOutput*/, setRunOutput] = useState<string | null>(null);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [errorCount, setErrorCount] = useState<number>(0);
     const [heartsByFile, setHeartsByFile] = useState<{ [key: string]: number }>({});
-
-
-    //const [fileContents, setFileContents] = useState<{ [key: string]: string }>({});
 
     useEffect(() => {
         // Initialize hearts for each file if not already set
@@ -43,11 +42,13 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
     }, [files]);
 
     const handleRun = async () => {
-        
+        console.log("RUN");
+        console.log(activeFile);
+        console.log(filesContents[activeFile]);
         if (!activeFile || !filesContents[activeFile]) {
             return;
         }
-
+        console.log("RUN");
         try {
             console.log("running code");
             const response = await fetch('http://localhost:8080/api/compile', {
@@ -55,7 +56,7 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ content: filesContents[activeFile] })
+                body: JSON.stringify({ path: activeFile })
             });
             console.log("running code: trying response");
             if (!response.ok) {
@@ -64,20 +65,22 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
             }
             console.log("running code: response ok");
             const data = await response.json();
+            console.log(data);
             if (data.nb_errors > 0) {
                 setErrorCount(data.nb_errors + errorCount);
-                setRunError(data.output);
+                setErrors(data.output);
+                setOutput("");
                 setShowModal(true);
             } else {
-                setRunOutput(data.output);
-                setRunError(null);
+                setOutput(data.output);
+                setErrors("");
                 setErrorCount(0);
                 setShowModal(false);
             }
         } catch (error) {
-            setRunError('Error running code');
+            setErrors('Error running code');
             console.error('Error running code:', error);
-            setRunOutput(null);
+            setOutput("");
             setErrorCount(0);
             setShowModal(false);
         }
@@ -124,16 +127,16 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
                         {files.map((file) => (
                         <div id="life-bar" style={{ display: activeFile === file ? 'flex' : 'none', alignItems: 'center' }}>
                             {[...Array(5 - heartsByFile[file] || 0)].map((_, index) => (
-                                <img key={index} src="/ImagesPing/empty-heart.png" alt="Empty Heart" style={{ width: '15px', height: '15px', margin: '0 2px' }} />
+                                <img key={index} src="/ImagesPing/empty-heart.png" alt="Empty Heart" style={{ width: '20px', height: '20px', margin: '0 2px' }} />
                             ))}
                             {[...Array(heartsByFile[file] || 0)].map((_, index) => (
                                 <img key={index} src="/ImagesPing/full-heart.png" alt="Full Heart" style={{ width: '20px', height: '20px', margin: '0 2px' }} />
                             ))}
                         </div>
-                        ))}/home/titomtrng/epita/VAILLANT/Projets
+                        ))}
                     </div>
                 </>
-                <Modal show={showModal} errors={runError} onClose={handleCloseModal} errorcount={errorCount} />
+                <Modal show={showModal} errors={errors} onClose={handleCloseModal} errorcount={errorCount} />
             </div>
             {files.map((file) => (
                 <div className={`${isDarkMode ? "editor dark" : "editor"}`} key={file} style={{ display: activeFile === file ? 'flex' : 'none' }}>

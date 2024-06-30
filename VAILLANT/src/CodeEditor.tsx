@@ -64,7 +64,8 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, folderPath,
                     throw new Error('Failed to fetch file content');
                 }
                 const data = await response.text();
-                setCode(data); 
+                setCode(data);
+                onContentChange(data); 
             } catch (error) {
                 console.error('Error fetching file content:', error);
             }
