@@ -151,6 +151,8 @@
                 <configuration>
                     <compilerArgs>
                         <arg>-parameters</arg>
+                        <source>1.8</source>
+                        <target>1.8</target>
                     </compilerArgs>
                 </configuration>
             </plugin>
