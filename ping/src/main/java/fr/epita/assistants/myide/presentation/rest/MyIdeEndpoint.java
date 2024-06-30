@@ -390,7 +390,8 @@ public class MyIdeEndpoint {
             return logRespErr(400, "Project not opened " + feature + " on " + project + ", params : " + params);
         Feature.ExecutionReport report = ps.execute(p, type, params);
         if (report.isSuccess())
-            return logRespOk("Feature executed successfully " + feature + " on " + project + ", params : " + params);
+            return Response.ok(new ExecFeatureResponse("Feature " + feature + " executed: " +report.isSuccess())).build();
+            //return logRespOk("Feature executed successfully " + feature + " on " + project + ", params : " + params);
         return logRespErr(500, "Feature execution failed " + feature + " on " + project + ", params : " + params);
     }
 

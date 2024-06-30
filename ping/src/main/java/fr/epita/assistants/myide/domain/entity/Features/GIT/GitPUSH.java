@@ -16,7 +16,7 @@ public class GitPUSH extends GitFeatures implements Feature {
     public ExecutionReport execute(Project project, Object... params) {
         Git git = findRepo(project);
         PushCommand push = git.push();
-        try {
+        /*try {
             Status status = git.status().call();
             if (status.getAdded().isEmpty() &&
                     !status.hasUncommittedChanges() &&
@@ -31,7 +31,7 @@ public class GitPUSH extends GitFeatures implements Feature {
         } catch (GitAPIException e) {
             Logger.logError("Git: could not get status");
             return FalseReport();
-        }
+        }*/
         try {
             push.call();
         } catch (GitAPIException e) {
