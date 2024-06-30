@@ -1,0 +1,31 @@
+.help-menu {
+    width: 40%;
+    background-color: #FF6392;
+    color: #FFE45E;
+    border: 5px solid #E65486;
+    z-index: 1000; /* Ensure it's above other content */
+    visibility: hidden;
+    opacity: 0; 
+    line-height: 2em;
+    overflow-y: auto;
+}
+
+.help-menu.visible {
+    visibility: visible;
+    opacity: 1;
+}
+
+li {
+    color: #e4c21c;
+}
+
+.close{
+    background-image: url("/ImagesPing/croix.png");
+    width: 0.8em;
+    height: 1.45em;
+    margin-left: 10px;
+    background-size: 100%;
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-color: rgba(0, 0, 0, 0);
+}
