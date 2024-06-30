@@ -8,12 +8,12 @@ interface EditorComponentProps {
     filePath: string;
     folderPath: string;
     content: string;
+    onAddEditor: (file: string, editor: monaco.editor.IStandaloneCodeEditor) => void;
     onContentChange: (newContent: string) => void;
     onDeleteLine: () => void;
-    editorRef: monaco.editor.IStandaloneCodeEditor|null;
 }
 
-const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentChange, onDeleteLine, editorRef }) => {
+const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentChange, onDeleteLine, onAddEditor }) => {
     const { isDarkMode } = useTheme();
     const [code, setCode] = useState<string>(''); // State to hold the code
     const cursorLineRef = useRef<number>(0); // Ref to keep track of the cursor line
@@ -21,6 +21,8 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentCh
     const intervalRef = useRef<number | null>(null); // Ref to keep track of the interval
     const isFocusedRef = useRef<boolean>(true); // Ref to keep track of the editor focus state
     const debounceRef = useRef<boolean>(false);
+    const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
+
 
     const list_bomb = [
         "/ImagesPing/BombTimer/Bomb0.png",
@@ -101,8 +103,8 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentCh
     };
 
     const editorDidMount: EditorDidMount = (editor, monaco) => {
-        console.log("assigning")
-        editorRef = editor; // Store the editor instance
+        onAddEditor(filePath, editor) // Store the editor instance
+        editorRef.current = editor;
 
         // Register Ruby language
         monaco.languages.register({ id: 'ruby' });
@@ -216,10 +218,10 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentCh
     return (
         <div className={`${isDarkMode ? "editor dark" : "editor"}`}>
             <ContentShortcutsComponent 
-                onShortcutCopy={() => handleShortcutCopy(editorRef)}
-                onShortcutPaste={() => handleShortcutPaste(editorRef)}
-                onShortcutCut={() => handleShortcutCut(editorRef)}
-                onShortcutSelectAll={() => handleShortcutSelectAll(editorRef)}
+                onShortcutCopy={() => handleShortcutCopy(editorRef.current)}
+                onShortcutPaste={() => handleShortcutPaste(editorRef.current)}
+                onShortcutCut={() => handleShortcutCut(editorRef.current)}
+                onShortcutSelectAll={() => handleShortcutSelectAll(editorRef.current)}
             />
             <MonacoEditor
                 width="99.9%"

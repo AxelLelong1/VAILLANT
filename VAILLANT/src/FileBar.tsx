@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../css/run.css';
 import Modal from './Modal';
 
@@ -16,25 +16,20 @@ interface FileBarComponentProps {
     folderPath: string;
     filesContents: { [key: string]: string }
     heartsByFile: { [key: string]: number }
+    editorsByFile: { [key: string]: monaco.editor.IStandaloneCodeEditor }
+
     setHeartsByFile : React.Dispatch<React.SetStateAction<{[key: string]: number;}>>
     output: string;
     setOutput: React.Dispatch<React.SetStateAction<string>>
     errors: string;
     setErrors: React.Dispatch<React.SetStateAction<string>>
-    editorRefProps: monaco.editor.IStandaloneCodeEditor|null;
 }
 
-const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove, onFileSelect, activeFile, folderPath, filesContents, editorRefProps, setOutput, setErrors, errors, heartsByFile, setHeartsByFile }) => {
+const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove, onFileSelect, activeFile, folderPath, filesContents, editorsByFile, setOutput, setErrors, errors, heartsByFile, setHeartsByFile }) => {
 
     const { isDarkMode } = useTheme();
     const [showModal, setShowModal] = useState<boolean>(false);
     const [errorCount, setErrorCount] = useState<number>(0);
-
-    const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>(null);
-
-    useEffect(() => {
-        editorRefProps = editorRef.current;
-      }, [editorRef.current]);
 
     useEffect(() => {
         // Initialize hearts for each file if not already set
@@ -105,6 +100,10 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
             filesContents[filePath] = newContent
     };
 
+    const handleAddEditor = (file: string, editor: monaco.editor.IStandaloneCodeEditor) => {
+        editorsByFile[file] = editor;
+    };
+
     const handleDeleteLine = (filePath: string) => {
         setHeartsByFile((prevHearts) => ({
             ...prevHearts,
@@ -150,7 +149,7 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
                         content={filesContents[file] || ""}
                         onContentChange={(newContent: string) => handleFileContentChange(file, newContent)}
                         onDeleteLine={() => handleDeleteLine(file)}
-                        editorRef={editorRef.current}
+                        onAddEditor={handleAddEditor}
                     />
                 </div>
             ))}

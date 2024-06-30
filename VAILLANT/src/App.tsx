@@ -65,13 +65,14 @@ const App: React.FC = () => {
 
   const [isHelpMenuVisibleFr, setIsHelpMenuVisibleFr] = useState<boolean>(false);
   const [isHelpMenuVisibleLith, setIsHelpMenuVisibleLith] = useState<boolean>(false);
-  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>(null);
+  const [editorByFile, setEditor] = useState<{[key: string]: monaco.editor.IStandaloneCodeEditor}>({})
+
   const fileContentsRef = useRef<{ [key: string]: string }>({});
   
-
   useEffect(() => {
     activeFileRef.current = activeFile;
-  }, [activeFile]);
+}, [activeFile]);
+
 
   useEffect(() => {
     if (canfetch) {
@@ -161,6 +162,29 @@ const App: React.FC = () => {
     setActiveFile(filePath);
   };
 
+  const handleCopy = () =>
+  {
+    if (activeFile)
+    {
+      handleShortcutCopy(editorByFile[activeFile])
+    }
+  }
+
+  const handleCut = () =>
+  {
+    if (activeFile)
+    {
+      handleShortcutCut(editorByFile[activeFile])
+    }
+  }
+
+  const handlePaste = () =>
+  {
+    if (activeFile)
+    {
+      handleShortcutPaste(editorByFile[activeFile])
+    }
+  }
   const onFileTreeFetchComplete = useCallback(() => {
     console.log("callback");
     setcanFetch(true);
@@ -232,21 +256,13 @@ const App: React.FC = () => {
               <a>{t('Edit')}</a>
               <ul className="nav__submenu">
                 <li className="nav__submenu-item ">
-                  <a>{t('Undo')}</a>
-                </li>
-
-                <li className="nav__submenu-item ">
-                  <a>{t('Redo')}</a>
-                </li>
-
-                <li className="nav__submenu-item ">
-                  <a onClick={() => handleShortcutCopy(editorRef.current)}>{t('Copy')}</a>
+                  <a onClick={() => handleCopy()}>{t('Copy')}</a>
                 </li>
                 <li className="nav__submenu-item ">
-                  <a onClick={() => handleShortcutCut(editorRef.current)}>{t('Cut')}</a>
+                  <a onClick={() => handleCut()}>{t('Cut')}</a>
                 </li>
                 <li className="nav__submenu-item ">
-                  <a onClick={() => handleShortcutPaste(editorRef.current)}>{t('Paste')}</a>
+                  <a onClick={() => handlePaste()}>{t('Paste')}</a>
                 </li>
                 <li className="nav__submenu-item ">
                 <a><SearchButton folderPath={selectedFolderPath} output={output} setOutput={setOutput} errors={errors} setErrors={setErrors}/></a>
@@ -340,12 +356,12 @@ const App: React.FC = () => {
 
                         heartsByFile={heartsByFile}
                         setHeartsByFile={setHeartsByFile}
+                        editorsByFile={editorByFile}
                         output={output}
                         setOutput={setOutput}
                         errors={errors}
                         setErrors={setErrors}
                         filesContents={fileContentsRef.current}
-                        editorRefProps={editorRef.current}
                     />
 
             {/* Bottom pane for terminal, logs, etc. */}

@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import { monaco } from 'react-monaco-editor';
 
-export const handleShortcutCopy = (editor: monaco.editor.IStandaloneCodeEditor|null) => {
+export const handleShortcutCopy = (editor: monaco.editor.IStandaloneCodeEditor|undefined) => {
   if (editor) {
       const selection = editor.getSelection();
       if (selection) {
@@ -25,7 +25,7 @@ export const handleShortcutCopy = (editor: monaco.editor.IStandaloneCodeEditor|n
     
 };
 
-export const handleShortcutPaste = (editor: monaco.editor.IStandaloneCodeEditor|null) => {
+export const handleShortcutPaste = (editor: monaco.editor.IStandaloneCodeEditor|undefined) => {
   if (editor) {
       navigator.clipboard.readText().then((text) => {
           const selection = editor.getSelection();
@@ -44,7 +44,7 @@ export const handleShortcutPaste = (editor: monaco.editor.IStandaloneCodeEditor|
   }
 };
 
-export const handleShortcutCut = (editor: monaco.editor.IStandaloneCodeEditor|null) => {
+export const handleShortcutCut = (editor: monaco.editor.IStandaloneCodeEditor|undefined) => {
   if (editor) {
       const selection = editor.getSelection();
       if (selection) {
@@ -67,7 +67,7 @@ export const handleShortcutCut = (editor: monaco.editor.IStandaloneCodeEditor|nu
   }
 };
 
-export const handleShortcutSelectAll = (editor: monaco.editor.IStandaloneCodeEditor|null) => {
+export const handleShortcutSelectAll = (editor: monaco.editor.IStandaloneCodeEditor|undefined) => {
   if (editor) {
       const model = editor.getModel();
       if (model) {
