@@ -142,6 +142,7 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
                         onContentChange={(newContent: string) => handleFileContentChange(file, newContent)}
                         onDeleteLine={() => handleDeleteLine(file)}
                         onAddEditor={handleAddEditor}
+                        activeFile={activeFile}
                     />
                 </div>
             ))}

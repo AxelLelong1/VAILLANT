@@ -1,0 +1,31 @@
+ /* Animation.css */
+.animation-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 1); /* Fond sombre */
+    z-index: 1000;
+  }
+  
+  .animation-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Pour s'assurer que l'image est contenue sans déformation */
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out; /* Transition pour un effet de fondu */
+  }
+  
+  .animation-image.loaded {
+    opacity: 1;
+    animation: fadeInOut 1.5s ease-in-out forwards; /* L'animation commencera une fois l'image chargée */
+  }
+  
+  @keyframes fadeInOut {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+  }
