@@ -23,10 +23,10 @@ IF ERRORLEVEL 1 (
 )
 
 REM Start the backend server
-start java -jar ping-1.0.jar
+start java -jar APP/quarkus-app/quarkus-run.jar
 
 REM Serve the frontend files
-cd VAILLANT\dist
+cd APP/VAILLANT
 start python -m http.server 1573
 
 REM Wait for a few seconds to ensure the server is up and running

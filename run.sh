@@ -29,10 +29,10 @@ check_install_python
 check_install_ruby
 
 # Start the backend server
-java -jar ping-1.0.jar &
+java -jar APP/quarkus-app/quarkus-run.jar &
 
 # Serve the frontend files
-cd VAILLANT/dist
+cd APP/VAILLANT
 python3 -m http.server 1573 &
 
 # Wait for a few seconds to ensure the server is up and running
