@@ -5,6 +5,7 @@ import FileCreationButton from './NewFile';
 import OuvrirSelectionInput from './Ouvrir';
 import SaveButton from './Save';
 import SaveAsButton from './SaveAs';
+import SearchButton from './Search';
 
 //import EditorComponent from './CodeEditor';
 import AIComponent from './AI';
@@ -174,7 +175,7 @@ const App: React.FC = () => {
                   <a>{t('Paste')}</a>
                 </li>
                 <li className="nav__submenu-item ">
-                  <a>{t('Search')}</a>
+                  <a><SearchButton folderPath={selectedFolderPath} output={output} setOutput={setOutput} errors={errors} setErrors={setErrors}/></a>
                 </li>
               </ul>
             </li>
