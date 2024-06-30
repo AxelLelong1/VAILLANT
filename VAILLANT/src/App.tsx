@@ -175,7 +175,7 @@ const App: React.FC = () => {
                   <a>{t('Paste')}</a>
                 </li>
                 <li className="nav__submenu-item ">
-                  <a><SearchButton folderPath={selectedFolderPath} output={output} setOutput={setOutput}/></a>
+                  <a><SearchButton folderPath={selectedFolderPath} output={output} setOutput={setOutput} errors={errors} setErrors={setErrors}/></a>
                 </li>
               </ul>
             </li>

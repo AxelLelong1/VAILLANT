@@ -2,6 +2,7 @@ package fr.epita.assistants.myide.presentation.rest;
 
 import fr.epita.assistants.MyIde;
 import fr.epita.assistants.myide.domain.entity.*;
+import fr.epita.assistants.myide.domain.entity.report.SearchFeatureReport;
 import fr.epita.assistants.myide.domain.service.IDENodeService;
 import fr.epita.assistants.myide.domain.service.ProjectService;
 import jakarta.ws.rs.*;
@@ -22,7 +23,7 @@ import java.util.Set;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class MyIdeEndpoint {
-    public static final ProjectService ps = MyIde.init(null);
+    public static final ProjectService ps = MyIde.init(new MyIde.Configuration(Paths.get("tempFolder/indexFile"), Paths.get("tempFolder")));
     public static Project currProject;
 
     private static final List<Node> filesOpened = new ArrayList<>();
@@ -389,9 +390,16 @@ public class MyIdeEndpoint {
         if (currProject == null)
             return logRespErr(400, "Project not opened " + feature + " on " + project + ", params : " + params);
         Feature.ExecutionReport report = ps.execute(p, type, params);
-        if (report.isSuccess())
-            return Response.ok(new ExecFeatureResponse("Feature " + feature + " executed: " +report.isSuccess())).build();
-            //return logRespOk("Feature executed successfully " + feature + " on " + project + ", params : " + params);
+        if (report.isSuccess()) {
+            StringBuilder output = new StringBuilder();
+            if (type == Mandatory.Features.Any.SEARCH)
+            {
+                SearchFeatureReport sr = (SearchFeatureReport) report;
+                for (String str: sr.getPaths())
+                    output.append(str).append("\n");
+            }
+            return Response.ok(new ExecFeatureResponse("Feature " + feature + " executed: " + report.isSuccess(), output.toString())).build();
+        }
         return logRespErr(500, "Feature execution failed " + feature + " on " + project + ", params : " + params);
     }
 
