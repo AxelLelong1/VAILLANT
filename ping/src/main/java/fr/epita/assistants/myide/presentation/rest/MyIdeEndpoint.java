@@ -324,8 +324,8 @@ public class MyIdeEndpoint {
                     return logRespErr(400, "File cannot be moved from " + req.src() + " to " + req.dst());
                 }
 
-            } else
-                return logRespErr(400, "File is not in the project from " + req.src() + " to " + req.dst());
+            }/* else
+                return logRespErr(400, "File is not in the project from " + req.src() + " to " + req.dst());*/
         }
         try {
             Files.move(path, path1);
@@ -504,17 +504,14 @@ public class MyIdeEndpoint {
     }
 
     @POST @Path("/compile")
-    public Response compileRubyCode(ContentRequest req) {
-        if (req == null  || req.content() == null)
+    public Response compileRubyCode(PathRequest req) {
+        if (req == null  || req.path() == null)
             return logRespErr(400, "File null");
-        String content = req.content();
+        String path = req.path();
         Logger.log("executing ruby code");
         try {
-            java.nio.file.Path tempFile = java.nio.file.Files.createTempFile("code", ".rb");
-            java.nio.file.Files.write(tempFile, content.getBytes());
-
             // Exécuter la commande Ruby
-            ProcessBuilder processBuilder = new ProcessBuilder("ruby", tempFile.toString());
+            ProcessBuilder processBuilder = new ProcessBuilder("ruby", path);
             processBuilder.redirectErrorStream(true);
             Process process = processBuilder.start();
 
@@ -584,5 +581,17 @@ public class MyIdeEndpoint {
             return Response.ok(new AspectsResponse(aspectsStr.toString())).build();
         }
         return Response.ok(new AspectsResponse("")).build();
+    }
+
+    @POST @Path("/isfolder")
+    public Response isfolder(PathRequest req)
+    {
+        if (req == null || req.path() == null)
+            return logRespErr(400, "Path is null");
+        /*if (Files.exists(Paths.get(req.path())))
+            return logRespErr(400, "Does not exists");*/
+        if (Files.isDirectory(Paths.get(req.path())))
+            return Response.ok(new IsFolderResponse(true)).build();
+        return Response.ok(new IsFolderResponse(false)).build();
     }
 }
