@@ -5,6 +5,8 @@ import FileCreationButton from './NewFile';
 import OuvrirSelectionInput from './Ouvrir';
 import SaveButton, {handleSave} from './Save';
 import SaveAsButton, {handleSaveAs} from './SaveAs';
+import { handleShortcutCopy, handleShortcutCut, handleShortcutPaste, handleShortcutSelectAll } from './ContentShortcutsComponent';
+
 
 //import EditorComponent from './CodeEditor';
 import AIComponent from './AI';
@@ -29,8 +31,8 @@ import "../css/ai.css"
 
 import { useTheme } from './ThemeContext';
 import { aspects } from './Aspects';
-import ShortcutsComponent from './ContentShortcutsComponent';
 import FileShortcutsComponent from './FileShortcutsComponent';
+import { monaco } from 'react-monaco-editor';
 
 
 
@@ -45,8 +47,13 @@ const App: React.FC = () => {
   const [canfetch, setcanFetch] = useState<boolean>(false);
   const [aspectsList, setAspectsList] = useState<string[]>([]);
 
+  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>(null);
   const fileContentsRef = useRef<{ [key: string]: string }>({});
   
+
+  useEffect(() => {
+    console.log("ChangeIn app");
+  }, [editorRef.current]);
 
   useEffect(() => {
     if (canfetch) {
@@ -159,13 +166,13 @@ const App: React.FC = () => {
                 </li>
 
                 <li className="nav__submenu-item ">
-                  <a>{t('Copy')}</a>
+                  <a onClick={() => handleShortcutCopy(editorRef.current)}>{t('Copy')}</a>
                 </li>
                 <li className="nav__submenu-item ">
-                  <a>{t('Cut')}</a>
+                  <a onClick={() => handleShortcutCut(editorRef.current)}>{t('Cut')}</a>
                 </li>
                 <li className="nav__submenu-item ">
-                  <a>{t('Paste')}</a>
+                  <a onClick={() => handleShortcutPaste(editorRef.current)}>{t('Paste')}</a>
                 </li>
                 <li className="nav__submenu-item ">
                   <a>{t('Search')}</a>
@@ -241,6 +248,7 @@ const App: React.FC = () => {
                         activeFile={activeFileRef.current}
                         folderPath={selectedFolderPath}
                         filesContents={fileContentsRef.current}
+                        editorRefProps={editorRef.current}
                     />
 
             {/* Bottom pane for terminal, logs, etc. */}

@@ -1,19 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import MonacoEditor, { EditorDidMount, monaco } from 'react-monaco-editor';
 import { useTheme } from './ThemeContext';
-
 import "../css/bomb.css"
+import ContentShortcutsComponent, { handleShortcutCopy, handleShortcutCut, handleShortcutPaste, handleShortcutSelectAll } from './ContentShortcutsComponent';
 
 interface EditorComponentProps {
     filePath: string;
     folderPath: string;
     content: string;
     onContentChange: (newContent: string) => void;
-    onDeleteLine: () =>  void;
+    onDeleteLine: () => void;
+    editorRef: monaco.editor.IStandaloneCodeEditor|null;
 }
 
-
-const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, folderPath, onContentChange, onDeleteLine }) => {
+const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, onContentChange, onDeleteLine, editorRef }) => {
     const { isDarkMode } = useTheme();
     const [code, setCode] = useState<string>(''); // State to hold the code
     const cursorLineRef = useRef<number>(0); // Ref to keep track of the cursor line
@@ -22,8 +22,8 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, folderPath,
     const isFocusedRef = useRef<boolean>(true); // Ref to keep track of the editor focus state
     const debounceRef = useRef<boolean>(false);
 
-
-    const list_bomb =  ["/ImagesPing/BombTimer/Bomb0.png",
+    const list_bomb = [
+        "/ImagesPing/BombTimer/Bomb0.png",
         "/ImagesPing/BombTimer/Bomb1.png",
         "/ImagesPing/BombTimer/Bomb2.png",
         "/ImagesPing/BombTimer/Bomb3.png",
@@ -38,20 +38,18 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, folderPath,
         "/ImagesPing/BombTimer/Bomb12.png",
         "/ImagesPing/BombTimer/Bomb13.png",
         "/ImagesPing/BombTimer/Bomb14.png",
-        "/ImagesPing/BombTimer/Bomb15.png"];
+        "/ImagesPing/BombTimer/Bomb15.png"
+    ];
+
+
+    useEffect(() => {
+        console.log("ChangeIn Editor");
+      }, [editorRef]);
 
     // Fetch the file content when the component mounts
     useEffect(() => {
         const fetchFileContent = async () => {
             try {
-                await fetch('http://localhost:8080/api/open/file', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ path: filePath }),
-                });
-
                 const response = await fetch('http://localhost:8080/api/content', {
                     method: 'POST',
                     headers: {
@@ -64,7 +62,7 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, folderPath,
                     throw new Error('Failed to fetch file content');
                 }
                 const data = await response.text();
-                setCode(data); 
+                setCode(data);
             } catch (error) {
                 console.error('Error fetching file content:', error);
             }
@@ -86,7 +84,6 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, folderPath,
     };
 
     const deleteLine = (editor: monaco.editor.IStandaloneCodeEditor, lineNumber: number) => {
-            
         if (debounceRef.current) return;
         debounceRef.current = true;
         setTimeout(() => {
@@ -100,11 +97,12 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, folderPath,
             }
             debounceRef.current = false;
         }, 100); // Adjust timeout as needed
-
-
     };
 
     const editorDidMount: EditorDidMount = (editor, monaco) => {
+        console.log("assigning")
+        editorRef = editor; // Store the editor instance
+
         // Register Ruby language
         monaco.languages.register({ id: 'ruby' });
 
@@ -175,15 +173,13 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, folderPath,
                     clearInterval(intervalRef.current);
                 }
                 setRemainingTime(15);
-                // @ts-ignore 
                 intervalRef.current = setInterval(() => {
                     setRemainingTime((prevTime) => {
                         if (prevTime === 0) {
-                            deleteLine(editor, cursorLineRef.current);    
+                            deleteLine(editor, cursorLineRef.current);
                             return 15;
                         }
-                        if (!isFocusedRef.current) // Cursor not active
-                        {
+                        if (!isFocusedRef.current) {
                             return prevTime;
                         }
                         return prevTime - 1;
@@ -202,12 +198,13 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, folderPath,
     };
 
     
-    // Options for Monaco Editor
+
     const editorOptions = {
         selectOnLineNumbers: true,
         automaticLayout: true,
         language: 'ruby' // Specify language for syntax highlighting
     };
+
     const explosionSoundRef = useRef(null);
     useEffect(() => {
         if (remainingTime === 0 && explosionSoundRef.current) {
@@ -217,26 +214,31 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ filePath, folderPath,
 
     return (
         <div className={`${isDarkMode ? "editor dark" : "editor"}`}>
+            <ContentShortcutsComponent 
+                onShortcutCopy={() => handleShortcutCopy(editorRef)}
+                onShortcutPaste={() => handleShortcutPaste(editorRef)}
+                onShortcutCut={() => handleShortcutCut(editorRef)}
+                onShortcutSelectAll={() => handleShortcutSelectAll(editorRef)}
+            />
             <MonacoEditor
                 width="99.9%"
                 height="70%"
                 language="ruby"
-                theme= {`${isDarkMode ? "vs-dark" : "vs"}`}
+                theme={`${isDarkMode ? "vs-dark" : "vs"}`}
                 value={code}
                 options={editorOptions}
                 onChange={handleEditorChange}
                 editorDidMount={editorDidMount}
             />
             <div>
-            {remainingTime !== 0 ? (
-                <img className='bomb' src={`${list_bomb[remainingTime]}`}></img>
-            ) : (
-                <div className="explosion"><audio ref={explosionSoundRef} src="/music/explosion.mp3" /></div>
-            )}
+                {remainingTime !== 0 ? (
+                    <img className='bomb' src={`${list_bomb[remainingTime]}`} alt="Bomb Timer" />
+                ) : (
+                    <div className="explosion"><audio ref={explosionSoundRef} src="/music/explosion.mp3" /></div>
+                )}
             </div>
         </div>
     );
 };
 
 export default EditorComponent;
-
