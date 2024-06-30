@@ -47,10 +47,12 @@ const App: React.FC = () => {
 
   const [isGitAspect, setIsGitAspect] = useState<boolean>(false);
   const [canfetch, setcanFetch] = useState<boolean>(false);
+  const [is_remove, setIsRemove] = useState<boolean>(false);
   const [aspectsList, setAspectsList] = useState<string[]>([]);
   const [gitPullComplete, setGitPullComplete] = useState<boolean>(false);
 
   const [fileContents, setFileContents] = useState<{ [key: string]: string }>({});
+  const [heartsByFile, setHeartsByFile] = useState<{ [key: string]: number }>({});
   const [output, setOutput] = useState<string>("");
   const [errors, setErrors] = useState<string>("");
 
@@ -71,6 +73,38 @@ const App: React.FC = () => {
         setcanFetch(false);
     }
   }, [canfetch===true]);
+
+
+  useEffect( () => {
+      if (!activeFile)
+          return;
+      if (heartsByFile[activeFile] === 0)
+      {
+          handleFileRemove(activeFile);
+          const remove = async () => {
+            try {
+                const response = await fetch('http://localhost:8080/api/delete/folder', {
+                  method: 'POST',
+                  headers: {
+                      "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ path: activeFile})
+              });
+
+              if (response.ok) {
+                  setIsRemove(true);
+              } else {
+                  console.error('Failed to remove the file');
+              }
+          } catch (error) {
+              console.error("Couldn't remove the selected file", error);
+          }
+        };
+        remove();
+        setIsRemove(false);
+        //Afficher la grosse bombe (ici c'est l'endroit où le fichier a déjà été supprimé)
+      }
+  }, [heartsByFile]);
   
   const { t, i18n } = useTranslation();
 
@@ -264,17 +298,17 @@ const App: React.FC = () => {
 
       <div className={`ligne ${isDarkMode ? "dark" : ""}`}></div>
 
-      {/* Main IDE layout */}
-      <div className="ide-container">
-      {/* Files handling pane */}
-      <div className={`files-pane ${isDarkMode ? "black" : ""}`}>
-        <div className='filetree'>
-          {selectedFolderPath && <FileTree folderPath={selectedFolderPath} onFileClick={handleFileClick} onFetchComplete={onFileTreeFetchComplete} onGitPullComplete={gitPullComplete}/>}
+        {/* Main IDE layout */}
+        <div className="ide-container">
+        {/* Files handling pane */}
+        <div className={`files-pane ${isDarkMode ? "black" : ""}`}>
+          <div className='filetree'>
+            {selectedFolderPath && <FileTree folderPath={selectedFolderPath} onFileClick={handleFileClick} onFetchComplete={onFileTreeFetchComplete} onGitPullComplete={gitPullComplete} onFileRemove={handleFileRemove} is_remove={is_remove}/>}
+          </div>
+          <div className='MUSICA'>
+            <MusicPlayer />
+          </div>
         </div>
-        <div className='MUSICA'>
-          <MusicPlayer />
-        </div>
-      </div>
 
       <div className="ruby-pane">
             {/* Open files list */}
@@ -286,6 +320,8 @@ const App: React.FC = () => {
                         folderPath={selectedFolderPath}
                         filesContents={fileContents}
                         setFilesContents={setFileContents}
+                        heartsByFile={heartsByFile}
+                        setHeartsByFile={setHeartsByFile}
                         output={output}
                         setOutput={setOutput}
                         errors={errors}

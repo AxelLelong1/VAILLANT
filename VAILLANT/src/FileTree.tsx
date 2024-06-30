@@ -13,9 +13,11 @@ interface FileTreeProps {
     onFileClick: (filePath: string) => void;
     onFetchComplete: () => void;
     onGitPullComplete: boolean;
+    onFileRemove: (filePath: string) => void;
+    is_remove: boolean;
 }
 
-const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick, onFetchComplete, onGitPullComplete }) => {
+const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick, onFetchComplete, onGitPullComplete, onFileRemove, is_remove }) => {
     // State for managing the tree structure displayed in UI
     const [fileTree, setFileTree] = useState<FileTreeNode | null>(null);
 
@@ -30,7 +32,7 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick, onFetchCom
         } else {
             setFileTree(null);
         }
-    }, [folderPath, onGitPullComplete]);
+    }, [folderPath, onGitPullComplete, is_remove === true]);
 
     // Function to fetch the file tree from the server
     const fetchFileTree = useCallback(async () => {
@@ -80,6 +82,8 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick, onFetchCom
                 const path = getPathFromIndices(before, fileTree);
                 const pos = path.lastIndexOf('/');
                 const newpath = path.substring(0, pos + 1) + name;
+
+                onFileRemove(folderPath + path);
 
                 const response = await fetch('http://localhost:8080/api/move', {
                     method: 'POST',
@@ -155,6 +159,7 @@ const FileTree: React.FC<FileTreeProps> = ({ folderPath, onFileClick, onFetchCom
 
                 if (response.ok) {
                     fetchFileTree();
+                    onFileRemove(folderPath + path);
                 } else {
                     console.error('Failed to move the file');
                 }

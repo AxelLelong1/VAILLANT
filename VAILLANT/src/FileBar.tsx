@@ -15,17 +15,19 @@ interface FileBarComponentProps {
     folderPath: string;
     filesContents: { [key: string]: string }
     setFilesContents : React.Dispatch<React.SetStateAction<{[key: string]: string;}>>
+    heartsByFile: { [key: string]: number }
+    setHeartsByFile : React.Dispatch<React.SetStateAction<{[key: string]: number;}>>
     output: string;
     setOutput: React.Dispatch<React.SetStateAction<string>>
     errors: string;
     setErrors: React.Dispatch<React.SetStateAction<string>>
 }
 
-const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove, onFileSelect, activeFile, folderPath, filesContents, setFilesContents, setOutput, setErrors, errors }) => {
+const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove, onFileSelect, activeFile, folderPath, filesContents, setFilesContents, setOutput, setErrors, errors, heartsByFile, setHeartsByFile }) => {
     const { isDarkMode } = useTheme();
     const [showModal, setShowModal] = useState<boolean>(false);
     const [errorCount, setErrorCount] = useState<number>(0);
-    const [heartsByFile, setHeartsByFile] = useState<{ [key: string]: number }>({});
+    //const [heartsByFile, setHeartsByFile] = useState<{ [key: string]: number }>({});
 
     useEffect(() => {
         // Initialize hearts for each file if not already set
@@ -43,8 +45,6 @@ const FileBarComponent: React.FC<FileBarComponentProps> = ({ files, onFileRemove
 
     const handleRun = async () => {
         console.log("RUN");
-        console.log(activeFile);
-        console.log(filesContents[activeFile]);
         if (!activeFile || !filesContents[activeFile]) {
             return;
         }
